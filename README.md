@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**Tabby** is a Chrome extension + web app that helps users turn messy thoughts, notes, or brain dumps into clean, categorized, and prioritized to-do lists — all aligned with their personal goals. It uses large language models (LLMs) to analyze freeform text and generate actionable plans, helping users stay focused on what really matters.
+**Tabby** is a Chrome extension + web app that helps users be more productive in their work — all aligned with their personal goals. It uses large language models (LLMs) to analyze freeform text and generate actionable plans, helping users stay focused on what really matters.
 
 The goal is to create an AI-enhanced planner that feels *lightweight, transparent, and genuinely useful*, not bloated or gimmicky.
 
