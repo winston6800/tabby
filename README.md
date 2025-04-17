@@ -18,10 +18,13 @@ Tabby is an experiment: an interface where you can talk to an AI about your jumb
 We're not fully sure what to build yet, but we’re committed to building, testing, and learning until we find something that people actually want to use — not just once, but every day.
 
 ## 🗂️ Repository Structure
--current problem space: principles
--understanding of problem
-  -interviews
--feature plan design
-core features
+-current problem space: understanding 
+
+-interviews, feedback, and changes
+
+-spec feature plan design
+
+-main app
+
   
   
