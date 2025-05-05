@@ -15,5 +15,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      - run: npm ci
-      - run: npm test 
+      - name: Install dependencies
+        run: npm ci
+        working-directory: vite-react
+      - name: Run tests
+        run: npm test
+        working-directory: vite-react 
