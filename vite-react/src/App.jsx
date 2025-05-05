@@ -7,7 +7,9 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
+    // Wrapping content in main element for semantic HTML and testing purposes
+    // This allows us to test the component's presence using getByRole('main')
+    <main>
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -28,7 +30,7 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-    </>
+    </main>
   )
 }
 
