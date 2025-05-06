@@ -1,0 +1,1 @@
+console.log("Tabby Chrome Extension loaded!"); 
