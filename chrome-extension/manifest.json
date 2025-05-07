@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Tabby Task View",
+  "version": "0.1.0",
+  "description": "Lightweight task view and notecard for focused work sessions.",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": []
+} 
