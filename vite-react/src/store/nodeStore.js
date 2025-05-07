@@ -1,3 +1,6 @@
+// Zustand store for managing node and edge state in the node canvas.
+// Handles node/edge CRUD, selection, and localStorage persistence.
+
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 import { applyNodeChanges, applyEdgeChanges } from 'reactflow';
@@ -5,6 +8,7 @@ import { applyNodeChanges, applyEdgeChanges } from 'reactflow';
 const useNodeStore = create((set, get) => ({
   nodes: [],
   edges: [],
+  selectedNodeId: null,
   
   onNodesChange: (changes) => {
     set({
@@ -25,18 +29,21 @@ const useNodeStore = create((set, get) => ({
   },
   
   addNode: (nodeData) => set((state) => ({
-    nodes: [...state.nodes, {
-      id: uuidv4(),
-      type: 'custom',
-      position: { x: 100, y: 100 },
-      data: {
-        title: nodeData.title || 'New Node',
-        description: nodeData.description || '',
-        tags: nodeData.tags || [],
-        color: nodeData.color || '#ffffff',
-        size: nodeData.size || 200,
+    nodes: [
+      ...state.nodes,
+      {
+        id: uuidv4(),
+        type: 'custom',
+        position: { x: 100, y: 100 },
+        data: {
+          title: nodeData.title || 'New Node',
+          description: nodeData.description || '',
+          tags: nodeData.tags || [],
+          color: nodeData.color || '#ffffff',
+          size: nodeData.size || 200,
+        },
       },
-    }],
+    ],
   })),
   
   updateNode: (nodeId, updates) => set((state) => ({
@@ -79,6 +86,9 @@ const useNodeStore = create((set, get) => ({
       set({ nodes, edges });
     }
   },
+  
+  selectNode: (nodeId) => set({ selectedNodeId: nodeId }),
+  clearSelectedNode: () => set({ selectedNodeId: null }),
 }));
 
 export default useNodeStore; 

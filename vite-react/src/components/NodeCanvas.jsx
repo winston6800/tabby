@@ -5,10 +5,14 @@ import ReactFlow, {
   MiniMap,
 } from 'reactflow';
 import useNodeStore from '../store/nodeStore';
+import SidebarEditor from './SidebarEditor';
 import 'reactflow/dist/style.css';
 
+// NodeCanvas: Main canvas for displaying and interacting with nodes and edges using ReactFlow.
+// Handles node creation, selection, and renders the sidebar editor for node editing.
+// Integrates with Zustand store for state management.
 const NodeCanvas = ({ nodeTypes }) => {
-  const { nodes, edges, addNode, onNodesChange, onEdgesChange, onConnect, saveToLocalStorage } = useNodeStore();
+  const { nodes, edges, addNode, onNodesChange, onEdgesChange, onConnect, saveToLocalStorage, selectNode } = useNodeStore();
 
   const handleAddNode = useCallback(() => {
     addNode({
@@ -20,6 +24,10 @@ const NodeCanvas = ({ nodeTypes }) => {
     });
     saveToLocalStorage();
   }, [addNode, saveToLocalStorage]);
+
+  const onNodeClick = useCallback((event, node) => {
+    selectNode(node.id);
+  }, [selectNode]);
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
@@ -47,12 +55,14 @@ const NodeCanvas = ({ nodeTypes }) => {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
+        onNodeClick={onNodeClick}
         fitView
       >
         <Background />
         <Controls />
         <MiniMap />
       </ReactFlow>
+      <SidebarEditor />
     </div>
   );
 };
