@@ -11,7 +11,13 @@
   },
   "dependencies": {
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "reactflow": "^11.10.1",
+    "@emotion/styled": "^11.11.0",
+    "@emotion/react": "^11.11.3",
+    "zustand": "^4.5.0",
+    "uuid": "^9.0.1",
+    "@types/uuid": "^9.0.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
