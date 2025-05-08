@@ -14,9 +14,16 @@ db.serialize(()=> {
         nodeId INTEGER PRIMARY KEY AUTOINCREMENT,
         nodeName TEXT,
         userId INTEGER,
+        description TEXT,
+        priority INTEGER,
+        status TEXT,
+        tags TEXT,
+        dueDate DATETIME,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+        completedAt DATETIME,
         FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE
-        )`); 
+    )`);
+    
     
     //edges database
     db.run(`CREATE TABLE IF NOT EXISTS edges (
