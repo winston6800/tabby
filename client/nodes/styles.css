@@ -1,0 +1,40 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+  }
+  
+  #toolbar {
+    background: #eee;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+  }
+  
+  #canvas {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 40px);
+  }
+  
+  .node {
+    position: absolute;
+    background: #3498db;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  input.edit-label {
+    width: 80px;
+  }
+  
+  svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
+  
