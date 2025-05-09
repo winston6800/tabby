@@ -1,5 +1,5 @@
 // Track the current mode (add, point, delete, edit)
-let mode = 'add';
+let mode = null; // Start with no mode selected
 
 // Arrays to store nodes and edges
 let nodes = [];
@@ -13,7 +13,21 @@ let nodeId = 0;
 
 // Change the current mode
 function setMode(newMode) {
-  mode = newMode;
+  // If clicking the same mode button, deselect it
+  if (mode === newMode) {
+    mode = null;
+  } else {
+    mode = newMode;
+  }
+  
+  // Update button states
+  document.querySelectorAll('#toolbar button').forEach(button => {
+    button.classList.remove('selected');
+    if (button.textContent.toLowerCase().includes(mode)) {
+      button.classList.add('selected');
+    }
+  });
+  
   selectedNode = null; // reset selection when changing modes
 }
 
@@ -76,6 +90,31 @@ function render() {
     div.style.left = node.x + 'px';
     div.style.top = node.y + 'px';
     div.textContent = node.label;
+
+    // Add drag-and-drop functionality
+    div.onmousedown = function(e) {
+      // Allow dragging in default mode (no mode selected) or add mode
+      if (mode !== null && mode !== 'add') return;
+      
+      e.stopPropagation();
+      
+      const startX = e.clientX - node.x;
+      const startY = e.clientY - node.y;
+      
+      function onMouseMove(e) {
+        node.x = e.clientX - startX;
+        node.y = e.clientY - startY;
+        render();
+      }
+      
+      function onMouseUp() {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      }
+      
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    };
 
     // Handle click on a node
     div.onclick = function (e) {

@@ -12,6 +12,24 @@ body, html {
     gap: 10px;
   }
   
+  #toolbar button {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  #toolbar button:hover {
+    background: #2980b9;
+  }
+  
+  #toolbar button.selected {
+    background: #1a5276;
+  }
+  
   #canvas {
     position: relative;
     width: 100%;
