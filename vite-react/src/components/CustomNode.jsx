@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 import styled from '@emotion/styled';
+import useNodeStore from '../store/nodeStore';
 
 // CustomNode: ReactFlow node component for displaying a node with title, tags, color, and size.
 // Used as the custom node type in the node canvas.
@@ -16,6 +17,13 @@ const NodeContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  cursor: ${props => props.isFocusMode ? 'pointer' : 'default'};
+  transition: transform 0.2s, box-shadow 0.2s;
+  
+  &:hover {
+    transform: ${props => props.isFocusMode ? 'scale(1.02)' : 'none'};
+    box-shadow: ${props => props.isFocusMode ? '0 4px 12px rgba(0,0,0,0.1)' : 'none'};
+  }
 `;
 
 const Title = styled.h3`
@@ -37,9 +45,23 @@ const Tag = styled.span`
   font-size: 12px;
 `;
 
-const CustomNode = ({ data }) => {
+const CustomNode = ({ data, id }) => {
+  const isFocusMode = useNodeStore((state) => state.isFocusMode);
+  const selectNode = useNodeStore((state) => state.selectNode);
+
+  const handleClick = () => {
+    if (isFocusMode) {
+      selectNode(id);
+    }
+  };
+
   return (
-    <NodeContainer color={data.color} size={data.size}>
+    <NodeContainer 
+      color={data.color} 
+      size={data.size}
+      isFocusMode={isFocusMode}
+      onClick={handleClick}
+    >
       <Handle type="target" position={Position.Top} />
       <Title>{data.title}</Title>
       {data.tags && data.tags.length > 0 && (

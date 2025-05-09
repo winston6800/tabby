@@ -9,6 +9,12 @@ const useNodeStore = create((set, get) => ({
   nodes: [],
   edges: [],
   selectedNodeId: null,
+  isFocusMode: false,
+  
+  toggleMode: () => set((state) => ({
+    isFocusMode: !state.isFocusMode,
+    selectedNodeId: null // Clear selection when toggling modes
+  })),
   
   onNodesChange: (changes) => {
     set({
@@ -75,6 +81,7 @@ const useNodeStore = create((set, get) => ({
     localStorage.setItem('nodeFlow', JSON.stringify({
       nodes: state.nodes,
       edges: state.edges,
+      isFocusMode: state.isFocusMode,
     }));
   },
   
@@ -82,8 +89,8 @@ const useNodeStore = create((set, get) => ({
   loadFromLocalStorage: () => {
     const saved = localStorage.getItem('nodeFlow');
     if (saved) {
-      const { nodes, edges } = JSON.parse(saved);
-      set({ nodes, edges });
+      const { nodes, edges, isFocusMode } = JSON.parse(saved);
+      set({ nodes, edges, isFocusMode: isFocusMode || false });
     }
   },
   

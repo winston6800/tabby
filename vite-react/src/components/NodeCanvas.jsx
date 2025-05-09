@@ -6,13 +6,25 @@ import ReactFlow, {
 } from 'reactflow';
 import useNodeStore from '../store/nodeStore';
 import SidebarEditor from './SidebarEditor';
+import FocusMode from './FocusMode';
 import 'reactflow/dist/style.css';
 
 // NodeCanvas: Main canvas for displaying and interacting with nodes and edges using ReactFlow.
 // Handles node creation, selection, and renders the sidebar editor for node editing.
 // Integrates with Zustand store for state management.
 const NodeCanvas = ({ nodeTypes }) => {
-  const { nodes, edges, addNode, onNodesChange, onEdgesChange, onConnect, saveToLocalStorage, selectNode } = useNodeStore();
+  const { 
+    nodes, 
+    edges, 
+    addNode, 
+    onNodesChange, 
+    onEdgesChange, 
+    onConnect, 
+    saveToLocalStorage, 
+    selectNode,
+    isFocusMode,
+    toggleMode,
+  } = useNodeStore();
 
   const handleAddNode = useCallback(() => {
     addNode({
@@ -31,23 +43,41 @@ const NodeCanvas = ({ nodeTypes }) => {
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
-      <button
-        onClick={handleAddNode}
-        style={{
-          position: 'absolute',
-          top: 10,
-          left: 10,
-          zIndex: 5,
-          padding: '8px 16px',
-          background: '#1a192b',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-        }}
-      >
-        Add Node
-      </button>
+      <div style={{
+        position: 'absolute',
+        top: 10,
+        left: 10,
+        zIndex: 5,
+        display: 'flex',
+        gap: 10,
+      }}>
+        <button
+          onClick={handleAddNode}
+          style={{
+            padding: '8px 16px',
+            background: '#1a192b',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        >
+          Add Node
+        </button>
+        <button
+          onClick={toggleMode}
+          style={{
+            padding: '8px 16px',
+            background: isFocusMode ? '#e74c3c' : '#2ecc71',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        >
+          {isFocusMode ? 'Edit Mode' : 'Focus Mode'}
+        </button>
+      </div>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -62,7 +92,7 @@ const NodeCanvas = ({ nodeTypes }) => {
         <Controls />
         <MiniMap />
       </ReactFlow>
-      <SidebarEditor />
+      {isFocusMode ? <FocusMode /> : <SidebarEditor />}
     </div>
   );
 };
