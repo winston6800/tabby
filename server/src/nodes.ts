@@ -103,6 +103,17 @@ function updateNodeCompletedAt(nodeId: number, newCompletedAt: string, callback:
   });
 }
 
+/**
+ * DELETE: Remove a node
+ */
+function deleteNode(nodeId: number, callback: (err: Error | null, result?: { message: string }) => void): void {
+  const sql = `DELETE FROM nodes WHERE nodeId = ?`;
+  db.run(sql, [nodeId], function (err: Error | null) {
+    if (err) return callback(err);
+    callback(null, { message: "Node deleted successfully" });
+  });
+}
+
 export { 
     getNodes,
     createNode, 
@@ -113,5 +124,6 @@ export {
     updateNodeTags,
     updateNodeDueDate,
     updateNodeCompletedAt,
+    deleteNode
     };
 
