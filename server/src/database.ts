@@ -33,6 +33,7 @@ db.serialize(()=> {
         FOREIGN KEY (fromNodeId) REFERENCES nodes(nodeId) ON DELETE CASCADE,
         FOREIGN KEY (toNodeId) REFERENCES nodes(nodeId) ON DELETE CASCADE
         )`); 
+        
+    });
 
-
-    })
+export default db;
