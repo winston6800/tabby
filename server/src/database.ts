@@ -5,8 +5,8 @@ db.serialize(()=> {
     //Users database for logins
     db.run(`CREATE TABLE IF NOT EXISTS users (
         userId INTEGER PRIMARY KEY AUTOINCREMENT, 
-        userName TEXT,
-        password TEXT
+        userName TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL
         )`); 
     
     //nodes database
@@ -33,6 +33,7 @@ db.serialize(()=> {
         FOREIGN KEY (fromNodeId) REFERENCES nodes(nodeId) ON DELETE CASCADE,
         FOREIGN KEY (toNodeId) REFERENCES nodes(nodeId) ON DELETE CASCADE
         )`); 
+        
+    });
 
-
-    })
+export default db;
