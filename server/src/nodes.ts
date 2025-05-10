@@ -48,5 +48,16 @@ function updateNodeDesc(nodeId: number, newDesc: string, callback: (err: Error |
   });
 }
 
-export { getNodes, createNode, updateNodeName, updateNodeDesc };
+/**
+ * UPDATE: Edits a nodes description to a new given description 
+ */
+function updateNodePriority(nodeId: number, newPriority: Number, callback: (err: Error | null, result?: { message: string }) => void): void {
+  const sql = `UPDATE nodes SET priority = ? WHERE nodeId = ?`;
+  db.run(sql, [newPriority, nodeId], function (err: Error | null) {
+    if (err) return callback(err);
+    callback(null, { message: "Node priority updated successfully" });
+  });
+}
+
+export { getNodes, createNode, updateNodeName, updateNodeDesc, updateNodePriority };
 
