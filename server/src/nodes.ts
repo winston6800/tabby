@@ -49,7 +49,7 @@ function updateNodeDesc(nodeId: number, newDesc: string, callback: (err: Error |
 }
 
 /**
- * UPDATE: Edits a nodes description to a new given description 
+ * UPDATE: Edits a nodes priority to a new given priority 
  */
 function updateNodePriority(nodeId: number, newPriority: Number, callback: (err: Error | null, result?: { message: string }) => void): void {
   const sql = `UPDATE nodes SET priority = ? WHERE nodeId = ?`;
@@ -59,5 +59,59 @@ function updateNodePriority(nodeId: number, newPriority: Number, callback: (err:
   });
 }
 
-export { getNodes, createNode, updateNodeName, updateNodeDesc, updateNodePriority };
+/**
+ * UPDATE: Edits a nodes status to a new given status 
+ */
+function updateNodeStatus(nodeId: number, newStatus: string, callback: (err: Error | null, result?: { message: string }) => void): void {
+  const sql = `UPDATE nodes SET status = ? WHERE nodeId = ?`;
+  db.run(sql, [newStatus, nodeId], function (err: Error | null) {
+    if (err) return callback(err);
+    callback(null, { message: "Node status updated successfully" });
+  });
+}
+
+/**
+ * UPDATE: Edits a nodes tags to a new given tags 
+ */
+function updateNodeTags(nodeId: number, newTags: string, callback: (err: Error | null, result?: { message: string }) => void): void {
+  const sql = `UPDATE nodes SET tags = ? WHERE nodeId = ?`;
+  db.run(sql, [newTags, nodeId], function (err: Error | null) {
+    if (err) return callback(err);
+    callback(null, { message: "Node tags updated successfully" });
+  });
+}
+
+/**
+ * UPDATE: Edits a nodes due date to a new given due date 
+ */
+function updateNodeDueDate(nodeId: number, newDueDate: string, callback: (err: Error | null, result?: { message: string }) => void): void {
+  const sql = `UPDATE nodes SET dueDate = ? WHERE nodeId = ?`;
+  db.run(sql, [newDueDate, nodeId], function (err: Error | null) {
+    if (err) return callback(err);
+    callback(null, { message: "Node due date updated successfully" });
+  });
+}
+
+/**
+ * UPDATE: Edits a nodes complated at time
+ */
+function updateNodeCompletedAt(nodeId: number, newCompletedAt: string, callback: (err: Error | null, result?: { message: string }) => void): void {
+  const sql = `UPDATE nodes SET completedAt = ? WHERE nodeId = ?`;
+  db.run(sql, [newCompletedAt, nodeId], function (err: Error | null) {
+    if (err) return callback(err);
+    callback(null, { message: "Node completion time updated successfully" });
+  });
+}
+
+export { 
+    getNodes,
+    createNode, 
+    updateNodeName, 
+    updateNodeDesc, 
+    updateNodePriority, 
+    updateNodeStatus, 
+    updateNodeTags,
+    updateNodeDueDate,
+    updateNodeCompletedAt,
+    };
 
