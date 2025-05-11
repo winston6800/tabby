@@ -5,8 +5,8 @@ db.serialize(()=> {
     //Users database for logins
     db.run(`CREATE TABLE IF NOT EXISTS users (
         userId INTEGER PRIMARY KEY AUTOINCREMENT, 
-        userName TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL
+        userName TEXT,
+        password TEXT
         )`); 
     
     //nodes database

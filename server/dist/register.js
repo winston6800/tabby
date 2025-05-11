@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const bcrypt_1 = require("bcrypt");
 const sequelize_1 = require("sequelize");
+const users_1 = require("./users");
 const router = express_1.default.Router();
 const sequelize = new sequelize_1.Sequelize({
     dialect: "sqlite",
@@ -18,29 +19,16 @@ router.post("/", async (req, res) => {
     const data = req.body;
     const securedPassword = await (0, bcrypt_1.hash)(data.password, saltRounds);
     try {
-        await sequelize.query("INSERT INTO users (username, password) VALUES (:username, :password)", {
-            replacements: {
-                username: data.username,
-                password: securedPassword,
-            },
+        (0, users_1.createUser)(data.username, securedPassword, (err, userId) => {
+            if (err) {
+                return res.status(500).json({ error: "Error registering user: " + err });
+            }
+            console.log(data.username + " successful");
+            res.status(201).json({ message: 'User registered successfully', userId });
         });
-        res.status(200).json({ Message: "Success! " });
     }
     catch (e) {
-        if (e instanceof Error) {
-            if (e.message === "Validation error") {
-                console.log("already exists");
-                res.status(412).json({ error: "Email already exists!" });
-            }
-            else {
-                console.log("unknown: " + e);
-                res.status(400).json({ error: "Unknown error: " + e });
-            }
-        }
-        else {
-            console.log("We blew up");
-            res.status(500).json({ error: "How did we get here: " + e });
-        }
+        res.status(500).json({ error: 'Error: ' + e });
     }
 });
 exports.default = router;

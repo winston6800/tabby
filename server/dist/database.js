@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('./tabby.db');
 db.serialize(() => {
@@ -31,3 +32,4 @@ db.serialize(() => {
         FOREIGN KEY (toNodeId) REFERENCES nodes(nodeId) ON DELETE CASCADE
         )`);
 });
+exports.default = db;

@@ -2,6 +2,7 @@
 import express from "express";
 import { hash } from "bcrypt";
 import { Sequelize } from "sequelize";
+import { createUser } from "./users";
 
 const router = express.Router();
 
@@ -18,29 +19,14 @@ router.post("/", async (req, res) => {
   const securedPassword = await hash(data.password, saltRounds);
 
   try {
-    await sequelize.query(
-      "INSERT INTO users (username, password) VALUES (:username, :password)",
-      {
-        replacements: {
-          username: data.username,
-          password: securedPassword,
-        },
+    createUser(data.username, securedPassword, (err, userId) => {
+      if (err) {
+        return res.status(500).json({ error: "Error registering user: " + err });
       }
-    );
-    res.status(200).json({ Message: "Success! " });
+      res.status(201).json({ message: 'User registered successfully', userId });
+    });
   } catch (e) {
-    if (e instanceof Error) {
-      if (e.message === "Validation error") {
-        console.log("already exists");
-        res.status(412).json({error: "Email already exists!"});
-      } else {
-        console.log("unknown: " + e);
-        res.status(400).json({ error: "Unknown error: " + e });
-      }
-    } else {
-      console.log("We blew up");
-      res.status(500).json({ error: "How did we get here: " + e });
-    }
+    res.status(500).json({ error: 'Error: ' + e });
   }
 });
 
