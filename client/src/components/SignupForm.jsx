@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 export default function SignupForm() {
-  const submit = (event) => {
+  const submit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const submitButton = event.currentTarget.querySelector(
@@ -13,7 +13,39 @@ export default function SignupForm() {
       password: formData.get("password"),
       verifyPassword: formData.get("verPassword"),
     };
-    console.log(data);
+
+    try {
+      const { username, password, verifyPassword } = data;
+
+      if (password !== verifyPassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      const payload = {
+        username,
+        password,
+      };
+
+      const response = await fetch("http://localhost:4000/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert("Signup successful!");
+        // optionally redirect to login or dashboard
+      } else {
+        alert(`Signup failed: ${result.error}`);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("An unexpected error occurred.");
+    } finally {
+      if (submitButton) submitButton.disabled = false;
+    }
   };
   return (
     <div>
@@ -26,10 +58,10 @@ export default function SignupForm() {
             placeholder="Email or Username"
           />{" "}
           <br />
-          <input name="password" type="text" placeholder="Password" /> <br />
+          <input name="password" type="password" placeholder="Password" /> <br />
           <input
             name="verPassword"
-            type="text"
+            type="password"
             placeholder="Verify Password"
           />{" "}
           <br />
