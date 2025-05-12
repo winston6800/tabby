@@ -1,16 +1,9 @@
 // routes/auth.ts
 import express from "express";
 import { hash } from "bcrypt";
-import { Sequelize } from "sequelize";
 import { createUser } from "./users";
 
 const router = express.Router();
-
-const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: "../tabby.db",
-  dialectOptions: { multipleStatements: true },
-});
 
 const saltRounds = 10;
 
