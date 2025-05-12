@@ -20,6 +20,7 @@ export default function LandingPage() {
         <div className="quote">
           <h3>
             You have ADHD? No more adderall needed. Tabby is your friend.
+            <br></br>
             — Laura
           </h3>
         </div>
