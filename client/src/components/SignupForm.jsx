@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import './Signupform.css';
 
 export default function SignupForm() {
   const submit = async (event) => {
@@ -48,7 +49,7 @@ export default function SignupForm() {
     }
   };
   return (
-    <div>
+    <div className="signup-wrapper">
       <div>
         <form onSubmit={submit}>
           <h2> Welcome To Tabby! </h2> <br />
