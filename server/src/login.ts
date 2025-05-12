@@ -1,7 +1,6 @@
 import express from "express";
 import { findUserByUsername } from "./users";
 import { compare } from "bcrypt";
-import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -20,9 +19,7 @@ router.post("/", async (req, res) => {
       return res.status(401).json({ error: 'Authentication failed' });
     }
 
-    // Create JWT token to stay logged in (WIP)
-    const token = jwt.sign({ userId: user.userId }, 'your-secret-key', { expiresIn: '1h' });
-    res.status(200).json({ token });
+    res.status(200);
   });
 
 });

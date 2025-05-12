@@ -14,12 +14,12 @@ router.post("/", async (req, res) => {
   try {
     createUser(data.username, securedPassword, (err, userId) => {
       if (err) {
-        return res.status(500).json({ error: "Error registering user: " + err });
+        return res.status(500).json({ error: + err });
       }
       res.status(201).json({ message: 'User registered successfully', userId });
     });
   } catch (e) {
-    res.status(500).json({ error: 'Error: ' + e });
+    res.status(500).json({ error: e });
   }
 });
 
