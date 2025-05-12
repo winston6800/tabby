@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SignupForm() {
+  const navigate = useNavigate();
   const submit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -35,8 +36,9 @@ export default function SignupForm() {
 
       const result = await response.json();
       if (response.ok) {
-        alert("Signup successful!");
+        alert("Signup successful! Please sign in");
         // optionally redirect to login or dashboard
+        navigate('/login');
       } else {
         alert(`Signup failed: ${result.error}`);
       }
@@ -56,13 +58,21 @@ export default function SignupForm() {
             name="username"
             type="text"
             placeholder="Email or Username"
+            required
           />{" "}
           <br />
-          <input name="password" type="password" placeholder="Password" /> <br />
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            required
+          />{" "}
+          <br />
           <input
             name="verPassword"
             type="password"
             placeholder="Verify Password"
+            required
           />{" "}
           <br />
           <div>

@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import register from "./register"
+import login from "./login"
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -13,6 +14,7 @@ app.get('/', (_req, res) => {
 });
 
 app.use('/signup', register)
+app.use('/login', login)
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
