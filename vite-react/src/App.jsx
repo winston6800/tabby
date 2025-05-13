@@ -17,9 +17,11 @@ function App() {
   }, [loadFromLocalStorage]);
 
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
+    // Note: Unsure if you want this to be main but you need to declare something to be main
+    // as per your test
+    <main style={{ width: '100vw', height: '100vh' }}>
       <NodeCanvas nodeTypes={nodeTypes} />
-    </div>
+    </main>
   );
 }
 

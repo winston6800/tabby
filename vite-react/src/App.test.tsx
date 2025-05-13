@@ -1,9 +1,18 @@
 // Import necessary testing utilities and the component to test
 import React from 'react';
-import { describe, it, expect } from 'vitest';  // Vitest's test functions
+import { describe, it, expect, beforeAll } from 'vitest';  // Vitest's test functions
 import { render, screen } from '@testing-library/react';  // React testing utilities
 import '@testing-library/jest-dom';  // Custom DOM matchers
 import App from './App';
+
+// Mock ResizeObserver to prevent errors in JSDOM (used by Vitest) which doesn't support it
+beforeAll(() => {
+  global.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+});
 
 // Test suite for the App component
 describe('App', () => {
