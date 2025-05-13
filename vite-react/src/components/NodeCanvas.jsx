@@ -29,7 +29,6 @@ const NodeCanvas = ({ nodeTypes }) => {
   const handleAddNode = useCallback(() => {
     addNode({
       title: 'New Node',
-      description: 'Click to edit',
       tags: ['new'],
       color: '#ffffff',
       size: 200,

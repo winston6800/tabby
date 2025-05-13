@@ -10,6 +10,7 @@ const useNodeStore = create((set, get) => ({
   edges: [],
   selectedNodeId: null,
   isFocusMode: false,
+  taskHistory: [], // Array to store completed tasks
   
   toggleMode: () => set((state) => ({
     isFocusMode: !state.isFocusMode,
@@ -44,6 +45,7 @@ const useNodeStore = create((set, get) => ({
         data: {
           title: nodeData.title || 'New Node',
           description: nodeData.description || '',
+          expectedOutput: nodeData.expectedOutput || '',
           tags: nodeData.tags || [],
           color: nodeData.color || '#ffffff',
           size: nodeData.size || 200,
@@ -75,6 +77,18 @@ const useNodeStore = create((set, get) => ({
     edges: state.edges.filter((edge) => edge.id !== edgeId),
   })),
   
+  // Add completed task to history
+  addToHistory: (taskData) => set((state) => ({
+    taskHistory: [
+      {
+        id: uuidv4(),
+        completedAt: new Date().toISOString(),
+        ...taskData
+      },
+      ...state.taskHistory
+    ]
+  })),
+  
   // Save to localStorage
   saveToLocalStorage: () => {
     const state = get();
@@ -82,6 +96,7 @@ const useNodeStore = create((set, get) => ({
       nodes: state.nodes,
       edges: state.edges,
       isFocusMode: state.isFocusMode,
+      taskHistory: state.taskHistory,
     }));
   },
   
@@ -89,8 +104,13 @@ const useNodeStore = create((set, get) => ({
   loadFromLocalStorage: () => {
     const saved = localStorage.getItem('nodeFlow');
     if (saved) {
-      const { nodes, edges, isFocusMode } = JSON.parse(saved);
-      set({ nodes, edges, isFocusMode: isFocusMode || false });
+      const { nodes, edges, isFocusMode, taskHistory } = JSON.parse(saved);
+      set({ 
+        nodes, 
+        edges, 
+        isFocusMode: isFocusMode || false,
+        taskHistory: taskHistory || []
+      });
     }
   },
   
