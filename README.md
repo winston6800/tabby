@@ -1,44 +1,117 @@
-# AI Productivity Assistant
+# Tabby - Your Creative Anchor
 
-## Project Overview
+## Overview
 
-**Tabby** is a Chrome extension + web app that helps users be more productive in their work — all aligned with their personal goals. It uses large language models (LLMs) to analyze freeform text and generate actionable plans, helping users stay focused on what really matters.
+Tabby is a visual productivity tool designed for creatives who thrive in chaos but need a gentle anchor to bring their ideas to fruition. It provides a flexible node-map interface, allowing users to externalize their creative storm, connect ideas, and set gentle reminders for their own goals without feeling boxed in.
 
-The goal is to create an AI-enhanced planner that feels *lightweight, transparent, and genuinely useful*, not bloated or gimmicky.
+## The Problem: Creative Chaos vs. Momentum (Scenario: Jordan, the Disorganized Creative)
 
-## 🎯 Core Goals
+Meet Jordan, a design major brimming with ideas. Her workspace is a testament to her creativity: multiple Figma boards, half-finished Notion pages, a screenplay draft, and an Etsy shop with sporadic sales. While inspiration is never lacking, the sheer volume of thoughts and projects leads to a cycle of distraction and a feeling of unaccomplishment.
 
+Every time Jordan sits down to work, she struggles to recall her priorities, gets sidetracked by new inspirations, and ends the day feeling like she's spiraled without making tangible progress. She fears traditional productivity tools, seeing them as rigid structures that stifle her creative process.
 
-We're building Tabby because we believe there's a unmet need in how people process messy thoughts, vague intentions, and overwhelming to-do in AI
+**Tabby is built for Jordan.** It aims to be the self-check, not a cage, helping her navigate her creative explorations while gently guiding her back to her self-defined objectives.
 
-We have powerful AI tools now — but most haven't found a good way to leverage them
+## Current Operational Use Case (Beta Release)
 
-Tabby is an experiment: an interface where you can talk to an AI about your jumbled thoughts, your half-baked ideas, or your chaotic to-do list — and start to find clarity, structure, and aligned action.
+This beta release of Tabby demonstrates the core visual mapping functionality addressing Jordan's need to externalize and organize her thoughts:
 
-We're not fully sure what to build yet, but we're committed to building, testing, and learning until we find something that people actually want to use — not just once, but every day.
+1.  **Launch Tabby**: The user can start the application.
+2.  **Visual Node Map**: The user is presented with a canvas.
+3.  **Create & Label Nodes**: Jordan can create nodes on the canvas to represent her tasks, ideas, or projects (e.g., "Finish rough cut of short film," "Prep two new art pieces for Etsy," "Reflect on themes for screenplay").
+4.  **Arrange & Connect Nodes**: She can drag and drop nodes, arranging them spatially in a way that makes sense to her. She can draw connections (edges) between nodes to visualize relationships, dependencies, or a flow of thought.
+5.  **Externalize Priorities**: Jordan can create a specific node for her main goal, like "Don't start anything new until rough cut is done."
 
-## 🗂️ Repository Structure
--current problem space: understanding 
+This setup allows Jordan to lay out her creative storm visually, see her commitments, and begin to bring structure to her workflow in a way that feels natural and empowering, rather than restrictive.
 
--interviews, feedback, and changes
+*(Future iterations will focus on features like gentle reminders based on her own stated priorities, e.g., "You wanted to finish the rough cut first.")*
 
--spec feature plan design
+## Toolchain and Processes
 
--main app
+Our development process and toolchain are set up to ensure quality and collaboration:
+
+*   **Version Control**: We use Git for version control, with all code hosted on a public GitHub repository. Commits are made frequently with descriptive messages, often following conventional commit standards (e.g., `feat:`, `fix:`, `docs:`).
+*   **Branching Strategy**: We primarily use feature branches for new development, which are then merged into the `main` branch via Pull Requests.
+*   **Bug Tracking**: GitHub Issues are used to track bugs, feature requests, and tasks.
+*   **Build System**: The frontend application (`vite-react`) is built using Vite, a fast and modern build tool for web projects.
+*   **Testing**: We use Vitest for running unit and integration tests within the Vite environment. Test files are co-located with the source files (e.g., `*.test.jsx`).
+*   **Continuous Integration (CI)**: GitHub Actions are configured to automate linting, testing, and potentially builds on every push and pull request to the `main` branch. (Verify current CI setup and update if necessary).
+
+## Instructions for Course Staff (and Users)
+
+### Prerequisites
+
+*   Node.js (v18.x or later recommended)
+*   npm (v9.x or later) or yarn (v1.x or later)
+
+### 1. Setup & Installation
+
+   1.  **Clone the repository:**
+       ```bash
+       git clone https://github.com/winston6800/tabby.git
+       cd tabby
+       ```
+   2.  **Navigate to the frontend project directory:**
+       ```bash
+       cd vite-react
+       ```
+   3.  **Install dependencies:**
+       Using npm:
+       ```bash
+       npm install
+       ```
+       Or using yarn:
+       ```bash
+       yarn install
+       ```
+
+### 2. Running the System (Development Mode)
+
+   1.  Ensure you are in the `vite-react` directory:
+       ```bash
+       cd tabby/vite-react  # If you are in the root 'tabby' directory
+       ```
+   2.  **Start the development server:**
+       Using npm:
+       ```bash
+       npm run dev
+       ```
+       Or using yarn:
+       ```bash
+       yarn dev
+       ```
+   3.  Open your web browser and navigate to `http://localhost:5173` (or the port specified in your terminal if different).
+
+### 3. Building the System (Production)
+
+   1.  Ensure you are in the `vite-react` directory.
+   2.  **Run the build command:**
+       Using npm:
+       ```bash
+       npm run build
+       ```
+       Or using yarn:
+       ```bash
+       yarn build
+       ```
+   3.  The production-ready static assets will be generated in the `vite-react/dist` directory.
+
+### 4. Testing the System
+
+   1.  Ensure you are in the `vite-react` directory.
+   2.  **Run the tests:**
+       Using npm:
+       ```bash
+       npm test
+       ```
+       Or using yarn:
+       ```bash
+       yarn test
+       ```
+       This will execute the test suite using Vitest.
 
 ---
-
-## 🧪 Running and Adding Tests
-
-- To add a test, create a file ending in `.test.tsx` or `.test.ts` in the `vite-react/src/` directory.
-- Run all tests locally with: `npm test` (from the `vite-react` directory)
-- When you push code or open a pull request, all tests will run automatically in CI (see `.github/workflows/ci.yml`).
-
-## 🤖 Continuous Integration (CI)
-
-- Our project uses GitHub Actions to automatically run all tests on every push and pull request.
-- You can find the workflow file in `.github/workflows/ci.yml`.
-- This ensures that new code does not break existing functionality and that tests are always up to date.
+This README aims to provide all necessary information to understand, build, run, and test the Tabby Beta release.
 
   
   
