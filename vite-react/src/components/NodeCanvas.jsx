@@ -40,6 +40,13 @@ const NodeCanvas = ({ nodeTypes }) => {
     selectNode(node.id);
   }, [selectNode]);
 
+  const handleSave = useCallback(() => {
+    // Save to localStorage first
+    saveToLocalStorage();
+    // Redirect to login page
+    window.location.href = '/login';
+  }, [saveToLocalStorage]);
+
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
       <div style={{
@@ -75,6 +82,19 @@ const NodeCanvas = ({ nodeTypes }) => {
           }}
         >
           {isFocusMode ? 'Edit Mode' : 'Focus Mode'}
+        </button>
+        <button
+          onClick={handleSave}
+          style={{
+            padding: '8px 16px',
+            background: '#3498db',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        >
+          Save Progress
         </button>
       </div>
       <ReactFlow
