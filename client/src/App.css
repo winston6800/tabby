@@ -1,0 +1,144 @@
+/* styles.css */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.landing-container {
+  background-color: #ead6fc;
+  color: #000;
+}
+
+/* Nav */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #ffffff;
+}
+
+.cat-img {
+  height: 80px;
+}
+
+.header .cat-img {
+  height: 600px;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-buttons button {
+  padding: 0.5rem 1rem;
+  background-color: #31343c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+.nav-buttons button:hover {
+  background-color: #1f2024;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  background-color: #d3aefc;
+}
+
+.header .quote {
+  margin-left: 2rem;
+  max-width: 500px;
+}
+
+.header h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Product Info */
+.productInfo {
+  padding: 2rem;
+  text-align: center;
+}
+
+.productInfo h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.productInfo p {
+  font-size: 1rem;
+  max-width: 500px;
+  margin: 0 auto 1rem auto;
+}
+
+.placeholder {
+  width: 600px;
+  height: 400px;
+  background-color: #ccc;
+  margin: 1rem auto;
+}
+
+/* Why Section */
+.why {
+  display: flex;
+  padding: 2rem;
+  gap: 2rem;
+}
+
+.why-left, .why-right {
+  flex: 1;
+}
+
+.why-box {
+  background-color: #ccc;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.why-box h4 {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.why-right p {
+  font-size: 0.9rem;
+}
+
+/* Creators */
+.creators {
+  background-color: white;
+  padding: 2rem;
+  text-align: center;
+}
+
+.creator-grid {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.creator-placeholder {
+  width: 80px;
+  height: 100px;
+  background-color: #ccc;
+}
+
+.creator-caption {
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
+
