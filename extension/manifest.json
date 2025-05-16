@@ -1,10 +1,25 @@
 {
     "name": "Tabby",
-    "description": "Tabby is an AI-enhanced planner",
+    "description": "Track your productivity streaks and manage tasks",
     "version": "1.0",
     "manifest_version": 3,
     "action": {
       "default_popup": "popup.html"
     },
-    "permissions": ["storage"]
-  }
+    "permissions": [
+      "storage",
+      "tabs",
+      "notifications",
+      "alarms"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "host_permissions": [
+      "<all_urls>"
+    ],
+    "web_accessible_resources": [{
+      "resources": ["icon.jpg"],
+      "matches": ["<all_urls>"]
+    }]
+}
