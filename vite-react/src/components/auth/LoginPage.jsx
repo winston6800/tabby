@@ -1,8 +1,27 @@
 import { Link, useNavigate } from "react-router-dom";
-import "./LoginPage.css"; // Use this CSS file or styled-components
+import "./auth.css";
 
+/**
+ * LoginPage Component
+ * 
+ * Handles user authentication and login flow.
+ * Currently implements a basic form with:
+ * - Username/email input
+ * - Password input
+ * - Login button
+ * - Sign up link
+ * - Back to canvas link
+ * 
+ * TODO: Implement actual authentication with server
+ */
 export default function LoginPage() {
   const navigate = useNavigate();
+
+  /**
+   * Handle form submission
+   * Currently just logs the attempt and redirects to canvas
+   * TODO: Implement actual authentication logic
+   */
   const submit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -26,7 +45,7 @@ export default function LoginPage() {
 
       const result = await response.json();
       if (response.ok) {
-        navigate('/');
+        navigate('/canvas');
       } else {
         alert(`Login failed: ${result.error}`);
       }
@@ -39,8 +58,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="login-wrapper">
-      <form className="login-form" onSubmit={submit}>
+    <div className="auth-wrapper">
+      <form className="auth-form" onSubmit={submit}>
         <div className="icon">🐱</div>
         <h2>Welcome back!</h2>
         <input
@@ -65,12 +84,12 @@ export default function LoginPage() {
             Create account
           </button>
         </Link>
-        <Link to="/">
+        <Link to="/canvas">
           <button type="button" className="alt-btn">
-            Back to home
+            Back to canvas
           </button>
         </Link>
       </form>
     </div>
   );
-}
+} 

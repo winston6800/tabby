@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ReactFlow, {
   Background,
   Controls,
@@ -13,6 +14,7 @@ import 'reactflow/dist/style.css';
 // Handles node creation, selection, and renders the sidebar editor for node editing.
 // Integrates with Zustand store for state management.
 const NodeCanvas = ({ nodeTypes }) => {
+  const navigate = useNavigate();
   const { 
     nodes, 
     edges, 
@@ -39,6 +41,11 @@ const NodeCanvas = ({ nodeTypes }) => {
   const onNodeClick = useCallback((event, node) => {
     selectNode(node.id);
   }, [selectNode]);
+
+  // Save Progress button handler
+  const handleSaveProgress = () => {
+    navigate('/login');
+  };
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
@@ -75,6 +82,19 @@ const NodeCanvas = ({ nodeTypes }) => {
           }}
         >
           {isFocusMode ? 'Edit Mode' : 'Focus Mode'}
+        </button>
+        <button
+          onClick={handleSaveProgress}
+          style={{
+            padding: '8px 16px',
+            background: '#7a77ff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        >
+          Save Progress
         </button>
       </div>
       <ReactFlow

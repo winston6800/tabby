@@ -1,8 +1,28 @@
 import { Link, useNavigate } from "react-router-dom";
-import './Signupform.css';
+import './auth.css';
 
+/**
+ * SignupForm Component
+ * 
+ * Handles new user registration.
+ * Implements a form with:
+ * - Username/email input
+ * - Password input
+ * - Password verification input
+ * - Register button
+ * - Login link
+ * - Back to canvas link
+ * 
+ * TODO: Implement actual registration with server
+ */
 export default function SignupForm() {
   const navigate = useNavigate();
+
+  /**
+   * Handle form submission
+   * Currently just logs the attempt and redirects to canvas
+   * TODO: Implement actual registration logic
+   */
   const submit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -38,7 +58,6 @@ export default function SignupForm() {
       const result = await response.json();
       if (response.ok) {
         alert("Signup successful! Please sign in");
-        // optionally redirect to login or dashboard
         navigate('/login');
       } else {
         alert(`Signup failed: ${result.error}`);
@@ -50,46 +69,38 @@ export default function SignupForm() {
       if (submitButton) submitButton.disabled = false;
     }
   };
+
   return (
-    <div className="signup-wrapper">
-      <div>
-        <form onSubmit={submit}>
-          <h2> Welcome To Tabby! </h2> <br />
-          <input
-            name="username"
-            type="text"
-            placeholder="Email or Username"
-            required
-          />{" "}
-          <br />
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            required
-          />{" "}
-          <br />
-          <input
-            name="verPassword"
-            type="password"
-            placeholder="Verify Password"
-            required
-          />{" "}
-          <br />
-          <div>
-            <p>
-              Already a user? <a href="/login">Log in</a>
-            </p>
-          </div>
-          <button type="submit">Register</button>
-        </form>
-      </div>
-      <Link to="/login">
-        <button>Test Link to Login</button>
-      </Link>
-      <Link to="/">
-        <button>Test Link to landing</button>
-      </Link>
+    <div className="auth-wrapper">
+      <form className="auth-form" onSubmit={submit}>
+        <div className="icon">🐱</div>
+        <h2>Welcome to Tabby!</h2>
+        <input
+          name="username"
+          type="text"
+          placeholder="Email or Username"
+          required
+        />
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          required
+        />
+        <input
+          name="verPassword"
+          type="password"
+          placeholder="Verify Password"
+          required
+        />
+        <div className="helper">
+          <p>Already a user? <Link to="/login">Log in</Link></p>
+        </div>
+        <button type="submit">Register</button>
+        <Link to="/canvas">
+          <button type="button" className="alt-btn">Back to canvas</button>
+        </Link>
+      </form>
     </div>
   );
-}
+} 

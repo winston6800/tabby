@@ -1,15 +1,23 @@
-.login-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.signup-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   font-family: 'Poppins', sans-serif;
   background: linear-gradient(135deg, #ffe0f0, #e0f7ff);
+  padding: 2rem;
+  z-index: 1000;
 }
 
-.login-wrapper .login-form {
+.signup-wrapper form {
   background: white;
   padding: 2rem;
+  margin-bottom: 50px; /* remove when removing test buttons */
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   width: 320px;
@@ -18,38 +26,31 @@
   align-items: center;
 }
 
-.login-wrapper .icon {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+.signup-wrapper h2 {
+  margin-bottom: 1rem;
+  color: #333;
 }
 
-.login-wrapper h2 {
-  margin-bottom: 1.5rem;
-  color: #444;
-}
-
-.login-wrapper input {
+.signup-wrapper input {
   width: 100%;
   padding: 0.75rem;
   margin-bottom: 1rem;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   border-radius: 12px;
   font-size: 1rem;
 }
 
-.login-wrapper .helper {
-  width: 100%;
-  text-align: right;
+.signup-wrapper p {
   margin-bottom: 1rem;
+  font-size: 0.9rem;
 }
 
-.login-wrapper .helper a {
-  font-size: 0.9rem;
+.signup-wrapper a {
   color: #7a77ff;
   text-decoration: none;
 }
 
-.login-wrapper button {
+.signup-wrapper button {
   background-color: #7a77ff;
   color: white;
   padding: 0.75rem;
@@ -62,16 +63,6 @@
   transition: background 0.3s;
 }
 
-.login-wrapper button:hover {
+.signup-wrapper button:hover {
   background-color: #6b69e9;
-}
-
-.login-wrapper .alt-btn {
-  background: #f3f3f3;
-  color: #333;
-}
-
-.login-wrapper .divider {
-  margin: 1rem 0;
-  color: #aaa;
-}
+} 
