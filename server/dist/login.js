@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const users_1 = require("./users");
 const bcrypt_1 = require("bcrypt");
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const router = express_1.default.Router();
 router.post("/", async (req, res) => {
     const { username, password } = req.body;
@@ -20,9 +19,7 @@ router.post("/", async (req, res) => {
         if (!passwordMatch) {
             return res.status(401).json({ error: 'Authentication failed' });
         }
-        // Create JWT token to stay logged in (WIP)
-        const token = jsonwebtoken_1.default.sign({ userId: user.userId }, 'your-secret-key', { expiresIn: '1h' });
-        res.status(200).json({ token });
+        res.status(200).json({ message: "Successfully logged in " + username });
     });
 });
 exports.default = router;
