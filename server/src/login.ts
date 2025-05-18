@@ -19,7 +19,7 @@ router.post("/", async (req, res) => {
       return res.status(401).json({ error: 'Authentication failed' });
     }
 
-    res.status(200);
+    res.status(200).json({message: "Successfully logged in " + username});
   });
 
 });
