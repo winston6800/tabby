@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginPage from './components/auth/LoginPage';
 import SignupForm from './components/auth/SignupForm';
 import NodeCanvas from './components/NodeCanvas';
+import CustomNode from './components/CustomNode';
 import 'reactflow/dist/style.css';
 
 /**
@@ -31,7 +32,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupForm />} />
-        <Route path="/canvas" element={<NodeCanvas />} />
+        <Route path="/canvas" element={<NodeCanvas nodeTypes={nodeTypes} />} />
         <Route path="/" element={<Navigate to="/canvas" replace />} />
       </Routes>
     </Router>

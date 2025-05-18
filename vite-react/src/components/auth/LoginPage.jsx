@@ -1,7 +1,5 @@
-<<<<<<< HEAD
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import './auth.css';
+import { Link, useNavigate } from "react-router-dom";
+import "./auth.css";
 
 /**
  * LoginPage Component
@@ -27,39 +25,16 @@ export default function LoginPage() {
   const submit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const submitButton = event.currentTarget.querySelector('button[type="submit"]');
-    if (submitButton) submitButton.disabled = true;
-
-    const data = {
-=======
-import { Link, useNavigate } from "react-router-dom";
-import "./LoginPage.css";
-
-export default function LoginPage() {
-  const navigate = useNavigate();
-  const submit = async (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
     const submitButton = event.currentTarget.querySelector(
       'button[type="submit"]'
     );
     if (submitButton) submitButton.disabled = true;
     let data = {
->>>>>>> main
       username: formData.get("username"),
       password: formData.get("password"),
     };
 
     try {
-<<<<<<< HEAD
-      // TODO: Implement actual login logic with the server
-      console.log('Login attempt:', data);
-      
-      // For now, just redirect to canvas
-      navigate('/canvas');
-    } catch (error) {
-      console.error('Login failed:', error);
-=======
       const response = await fetch("http://localhost:4000/login", {
         method: "POST",
         headers: {
@@ -78,53 +53,13 @@ export default function LoginPage() {
       console.log(error);
       alert("Unexpected error occured ");
     } finally {
->>>>>>> main
       if (submitButton) submitButton.disabled = false;
     }
   };
 
   return (
-<<<<<<< HEAD
     <div className="auth-wrapper">
       <form className="auth-form" onSubmit={submit}>
-        {/* App Icon */}
-        <div className="icon">🐱</div>
-        
-        {/* Form Header */}
-        <h2>Welcome back!</h2>
-        
-        {/* Login Form Fields */}
-        <input 
-          name="username" 
-          type="text" 
-          placeholder="Email or Username" 
-          required 
-        />
-        <input 
-          name="password" 
-          type="password" 
-          placeholder="Password" 
-          required 
-        />
-        
-        {/* Helper Links */}
-        <div className="helper">
-          <a href="/login">Forgot password?</a>
-        </div>
-        
-        {/* Submit Button */}
-        <button type="submit">Sign in</button>
-        
-        {/* Alternative Actions */}
-        <p className="divider">or</p>
-        <Link to="/signup">
-          <button type="button" className="alt-btn">Create account</button>
-        </Link>
-        <Link to="/canvas">
-          <button type="button" className="alt-btn">Back to canvas</button>
-=======
-    <div className="login-wrapper">
-      <form className="login-form" onSubmit={submit}>
         <div className="icon">🐱</div>
         <h2>Welcome back!</h2>
         <input
@@ -153,7 +88,6 @@ export default function LoginPage() {
           <button type="button" className="alt-btn">
             Back to canvas
           </button>
->>>>>>> main
         </Link>
       </form>
     </div>

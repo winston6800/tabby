@@ -42,19 +42,10 @@ const NodeCanvas = ({ nodeTypes }) => {
     selectNode(node.id);
   }, [selectNode]);
 
-<<<<<<< HEAD
-  const handleSave = useCallback(() => {
-    // Save to localStorage first
-    saveToLocalStorage();
-    // Redirect to login page
-    window.location.href = '/login';
-  }, [saveToLocalStorage]);
-=======
   // Save Progress button handler
   const handleSaveProgress = () => {
     navigate('/login');
   };
->>>>>>> main
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
@@ -93,17 +84,10 @@ const NodeCanvas = ({ nodeTypes }) => {
           {isFocusMode ? 'Edit Mode' : 'Focus Mode'}
         </button>
         <button
-<<<<<<< HEAD
-          onClick={handleSave}
-          style={{
-            padding: '8px 16px',
-            background: '#3498db',
-=======
           onClick={handleSaveProgress}
           style={{
             padding: '8px 16px',
             background: '#7a77ff',
->>>>>>> main
             color: 'white',
             border: 'none',
             borderRadius: '4px',

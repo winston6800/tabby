@@ -43,10 +43,10 @@ const useNodeStore = create((set, get) => ({
         type: 'custom',
         position: { x: 100, y: 100 },
         data: {
-          title: nodeData.title || 'New Node',
+          title: nodeData.title && nodeData.title.trim() !== '' ? nodeData.title : 'New Node',
           description: nodeData.description || '',
           expectedOutput: nodeData.expectedOutput || '',
-          tags: nodeData.tags || [],
+          tags: Array.isArray(nodeData.tags) && nodeData.tags.length > 0 ? nodeData.tags : ['new'],
           color: nodeData.color || '#ffffff',
           size: nodeData.size || 200,
         },
