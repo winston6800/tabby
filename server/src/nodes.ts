@@ -1,21 +1,37 @@
-import db from './database';
+import db from "./database";
 
 /**
  * CREATE: Makes a node
  */
-function createNode(userId: Number, nodedName: string, description: string, expectedOutput: string, tags: string, color: string, size: number, completedAt: string | null, callback: (err: Error | null, result?: any) => void) {
+function createNode(
+  userId: Number,
+  nodedName: string,
+  description: string,
+  expectedOutput: string,
+  tags: string,
+  color: string,
+  size: number,
+  callback: (err: Error | null, result?: any) => void
+) {
   const sql = `INSERT INTO nodes (userId, nodedName, description, expectedOutput, tags, color, size) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
-  db.run(sql, [userId, nodedName, description, expectedOutput, tags, color, size], function (err: Error | null) {
-    if (err) return callback(err, null);
-    callback(null, { message: "Node created successfully" });
-  });
+  db.run(
+    sql,
+    [userId, nodedName, description, expectedOutput, tags, color, size],
+    function (err: Error | null) {
+      if (err) return callback(err, null);
+      callback(null, { message: "Node created successfully" });
+    }
+  );
 }
 
 /**
  * READ: Get all nodes (optionally filtered by userId)
  */
-function getNodes(userId: number | null, callback: (err: Error | null, rows?: Node[]) => void) {
+function getNodes(
+  userId: number | null,
+  callback: (err: Error | null, rows?: Node[]) => void
+) {
   const sql = userId
     ? `SELECT * FROM nodes WHERE userId = ? ORDER BY createdAt DESC`
     : `SELECT * FROM nodes ORDER BY createdAt DESC`;
@@ -29,7 +45,11 @@ function getNodes(userId: number | null, callback: (err: Error | null, rows?: No
 /**
  * UPDATE: Edits a nodes name to a new given name
  */
-function updateNodeName(nodeId: number, newName: string, callback: (err: Error | null, result?: { message: string }) => void): void {
+function updateNodeName(
+  nodeId: number,
+  newName: string,
+  callback: (err: Error | null, result?: { message: string }) => void
+): void {
   const sql = `UPDATE nodes SET nodeName = ? WHERE nodeId = ?`;
   db.run(sql, [newName, nodeId], function (err: Error | null) {
     if (err) return callback(err);
@@ -38,9 +58,13 @@ function updateNodeName(nodeId: number, newName: string, callback: (err: Error |
 }
 
 /**
- * UPDATE: Edits a nodes description to a new given description 
+ * UPDATE: Edits a nodes description to a new given description
  */
-function updateNodeDesc(nodeId: number, newDesc: string, callback: (err: Error | null, result?: { message: string }) => void): void {
+function updateNodeDesc(
+  nodeId: number,
+  newDesc: string,
+  callback: (err: Error | null, result?: { message: string }) => void
+): void {
   const sql = `UPDATE nodes SET description = ? WHERE nodeId = ?`;
   db.run(sql, [newDesc, nodeId], function (err: Error | null) {
     if (err) return callback(err);
@@ -49,9 +73,13 @@ function updateNodeDesc(nodeId: number, newDesc: string, callback: (err: Error |
 }
 
 /**
- * UPDATE: Edits a nodes scope to a new given scope 
+ * UPDATE: Edits a nodes scope to a new given scope
  */
-function updateNodeScope(nodeId: number, newScope: string, callback: (err: Error | null, result?: { message: string }) => void): void {
+function updateNodeScope(
+  nodeId: number,
+  newScope: string,
+  callback: (err: Error | null, result?: { message: string }) => void
+): void {
   const sql = `UPDATE nodes SET scope = ? WHERE nodeId = ?`;
   db.run(sql, [newScope, nodeId], function (err: Error | null) {
     if (err) return callback(err);
@@ -60,9 +88,13 @@ function updateNodeScope(nodeId: number, newScope: string, callback: (err: Error
 }
 
 /**
- * UPDATE: Edits a nodes expectedOutput to a new given expectedOutput 
+ * UPDATE: Edits a nodes expectedOutput to a new given expectedOutput
  */
-function updateNodeExpectedOutput(nodeId: number, newExpectedOutput: string, callback: (err: Error | null, result?: { message: string }) => void): void {
+function updateNodeExpectedOutput(
+  nodeId: number,
+  newExpectedOutput: string,
+  callback: (err: Error | null, result?: { message: string }) => void
+): void {
   const sql = `UPDATE nodes SET expectedOutput = ? WHERE nodeId = ?`;
   db.run(sql, [newExpectedOutput, nodeId], function (err: Error | null) {
     if (err) return callback(err);
@@ -71,9 +103,13 @@ function updateNodeExpectedOutput(nodeId: number, newExpectedOutput: string, cal
 }
 
 /**
- * UPDATE: Edits a nodes tags to a new given tags 
+ * UPDATE: Edits a nodes tags to a new given tags
  */
-function updateNodeTags(nodeId: number, newTags: string, callback: (err: Error | null, result?: { message: string }) => void): void {
+function updateNodeTags(
+  nodeId: number,
+  newTags: string,
+  callback: (err: Error | null, result?: { message: string }) => void
+): void {
   const sql = `UPDATE nodes SET tags = ? WHERE nodeId = ?`;
   db.run(sql, [newTags, nodeId], function (err: Error | null) {
     if (err) return callback(err);
@@ -82,9 +118,13 @@ function updateNodeTags(nodeId: number, newTags: string, callback: (err: Error |
 }
 
 /**
- * UPDATE: Edits a nodes color to a new given color 
+ * UPDATE: Edits a nodes color to a new given color
  */
-function updateNodeColor(nodeId: number, newColor: string, callback: (err: Error | null, result?: { message: string }) => void): void {
+function updateNodeColor(
+  nodeId: number,
+  newColor: string,
+  callback: (err: Error | null, result?: { message: string }) => void
+): void {
   const sql = `UPDATE nodes SET color = ? WHERE nodeId = ?`;
   db.run(sql, [newColor, nodeId], function (err: Error | null) {
     if (err) return callback(err);
@@ -95,7 +135,11 @@ function updateNodeColor(nodeId: number, newColor: string, callback: (err: Error
 /**
  * UPDATE: Edits a nodes size to a new given size
  */
-function updateNodeSize(nodeId: number, newSize: number, callback: (err: Error | null, result?: { message: string }) => void): void {
+function updateNodeSize(
+  nodeId: number,
+  newSize: number,
+  callback: (err: Error | null, result?: { message: string }) => void
+): void {
   const sql = `UPDATE nodes SET size = ? WHERE nodeId = ?`;
   db.run(sql, [newSize, nodeId], function (err: Error | null) {
     if (err) return callback(err);
@@ -106,7 +150,10 @@ function updateNodeSize(nodeId: number, newSize: number, callback: (err: Error |
 /**
  * DELETE: Remove a node
  */
-function deleteNode(nodeId: number, callback: (err: Error | null, result?: { message: string }) => void): void {
+function deleteNode(
+  nodeId: number,
+  callback: (err: Error | null, result?: { message: string }) => void
+): void {
   const sql = `DELETE FROM nodes WHERE nodeId = ?`;
   db.run(sql, [nodeId], function (err: Error | null) {
     if (err) return callback(err);
@@ -114,16 +161,15 @@ function deleteNode(nodeId: number, callback: (err: Error | null, result?: { mes
   });
 }
 
-export { 
-    getNodes,
-    createNode, 
-    updateNodeName, 
-    updateNodeDesc, 
-    updateNodeColor, 
-    updateNodeScope,
-    updateNodeExpectedOutput, 
-    updateNodeTags,
-    updateNodeSize,
-    deleteNode
-    };
-
+export {
+  getNodes,
+  createNode,
+  updateNodeName,
+  updateNodeDesc,
+  updateNodeColor,
+  updateNodeScope,
+  updateNodeExpectedOutput,
+  updateNodeTags,
+  updateNodeSize,
+  deleteNode,
+};
