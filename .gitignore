@@ -37,3 +37,7 @@ out/
 
 # Mac system files
 .DS_Store 
+
+#tabby.db
+tabby.db
+/tabby.db

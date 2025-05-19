@@ -58,7 +58,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-wrapper">
+    <main className="auth-wrapper">
       <form className="auth-form" onSubmit={submit}>
         <div className="icon">🐱</div>
         <h2>Welcome back!</h2>
@@ -90,6 +90,6 @@ export default function LoginPage() {
           </button>
         </Link>
       </form>
-    </div>
+    </main>
   );
 } 
