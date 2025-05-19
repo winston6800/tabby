@@ -48,7 +48,7 @@ const NodeCanvas = ({ nodeTypes }) => {
   };
 
   return (
-    <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
+    <main style={{ width: '100vw', height: '100vh', position: 'relative' }}>
       <div style={{
         position: 'absolute',
         top: 10,
@@ -112,7 +112,7 @@ const NodeCanvas = ({ nodeTypes }) => {
         <MiniMap />
       </ReactFlow>
       {isFocusMode ? <FocusMode /> : <SidebarEditor />}
-    </div>
+    </main>
   );
 };
 
