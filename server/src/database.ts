@@ -32,7 +32,20 @@ db.serialize(()=> {
         FOREIGN KEY (fromNodeId) REFERENCES nodes(nodeId) ON DELETE CASCADE,
         FOREIGN KEY (toNodeId) REFERENCES nodes(nodeId) ON DELETE CASCADE
         )`); 
-        
+
+
+    //hisotry database
+    db.run(`CREATE TABLE IF NOT EXISTS history (
+        historyId INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId INTERGER,
+        nodeId INTEGER,
+        title TEXT,
+        description TEXT,
+        expectedOutput TEXT,
+        timeSpent TEXT,
+        tags TEXT,
+        FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE
+        )`); 
     });
 
 export default db;
