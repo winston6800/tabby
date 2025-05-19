@@ -51,6 +51,34 @@ describe("POST /login", () => {
     expect(response.status).toBe(401);
     expect(response.body.error).toBe("Authentication failed");
   })
+
+  it("fails when user not found", async () => {
+    users.findUserByUsername.mockImplementation((username, cb) => {
+      cb(null, null);
+    });
+
+    const response = await request(app).post("/login").send({
+      username: "NoUser",
+      password: "password123",
+    });
+
+    expect(response.status).toBe(401);
+    expect(response.body.error).toMatch(/Failed to find user/);
+  });
+
+  it("fails when findUserByUsername returns error", async () => {
+    users.findUserByUsername.mockImplementation((username, cb) => {
+      cb(new Error("DB error"), null);
+    });
+
+    const response = await request(app).post("/login").send({
+      username: "ErrorUser",
+      password: "password123",
+    });
+
+    expect(response.status).toBe(401);
+    expect(response.body.error).toMatch(/Failed to find user: Error: DB error/);
+  });
 });
 
 
