@@ -1,21 +1,21 @@
 import express from "express";
-import {   
-    createEdge, 
-    getEdges,
-    updateEdgeFromNodeId,
-    updateEdgeToNodeId,
-    deleteEdge
- } from "./edges";
+import {
+  createEdge,
+  getEdges,
+  updateEdgeFromNodeId,
+  updateEdgeToNodeId,
+  deleteEdge,
+} from "./edges";
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   const fromNodeId = req.query.fromNodeId ? Number(req.query.fromNodeId) : null;
 
   try {
     getEdges(fromNodeId, (err, rows) => {
       if (err) {
-        return res.status(500).json({ error: + err });
+        return res.status(500).json({ error: +err });
       }
       res.status(200).json(rows);
     });
@@ -24,13 +24,13 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
   const { fromNodeId, toNodeId } = req.body;
 
   try {
     createEdge(fromNodeId, toNodeId, (err, result) => {
       if (err) {
-        return res.status(500).json({ error: + err });
+        return res.status(500).json({ error: +err });
       }
       res.status(201).json(result);
     });
@@ -39,7 +39,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.patch('/:edgeId/from', async (req, res) => {
+router.patch("/:edgeId/from", async (req, res) => {
   const edgeId = Number(req.params.edgeId);
   const { fromNodeId } = req.body;
 
@@ -55,7 +55,7 @@ router.patch('/:edgeId/from', async (req, res) => {
   }
 });
 
-router.patch('/:edgeId/to', async (req, res) => {
+router.patch("/:edgeId/to", async (req, res) => {
   const edgeId = Number(req.params.edgeId);
   const { toNodeId } = req.body;
 
@@ -72,7 +72,7 @@ router.patch('/:edgeId/to', async (req, res) => {
 });
 
 // DELETE: Remove an edge
-router.delete('/:edgeId', async (req, res) => {
+router.delete("/:edgeId", async (req, res) => {
   const edgeId = Number(req.params.edgeId);
 
   try {
