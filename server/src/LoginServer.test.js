@@ -3,7 +3,7 @@ import express from "express";
 import loginRoute from "./login";
 import * as users from "./users";
 import { compare } from "bcrypt";
-import { describe, it, expect, vi, beforeEach } from "vitest"
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Create an Express app for testing
 const app = express();
@@ -12,8 +12,6 @@ app.use("/login", loginRoute);
 
 vi.mock("./users");
 vi.mock("bcrypt");
-
-
 
 describe("POST /login", () => {
   const mockUser = { username: "Jordan", password: "hashedpass" };
@@ -36,7 +34,7 @@ describe("POST /login", () => {
     expect(response.body.message).toBe("Successfully logged in Jordan");
   });
 
-  it("unsuccessful login test, password does not match", async () =>{
+  it("unsuccessful login test, password does not match", async () => {
     users.findUserByUsername.mockImplementation((username, cb) => {
       cb(null, mockUser);
     });
@@ -50,7 +48,7 @@ describe("POST /login", () => {
 
     expect(response.status).toBe(401);
     expect(response.body.error).toBe("Authentication failed");
-  })
+  });
 
   it("fails when user not found", async () => {
     users.findUserByUsername.mockImplementation((username, cb) => {
@@ -80,5 +78,3 @@ describe("POST /login", () => {
     expect(response.body.error).toMatch(/Failed to find user: Error: DB error/);
   });
 });
-
-
