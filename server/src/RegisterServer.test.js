@@ -13,7 +13,6 @@ app.use("/register", register);
 vi.mock("./users");
 vi.mock("bcrypt");
 
-
 describe("POST /register", () => {
   beforeEach(() => {
     vi.clearAllMocks();
