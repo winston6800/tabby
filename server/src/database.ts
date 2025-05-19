@@ -12,15 +12,14 @@ db.serialize(()=> {
     //nodes database
     db.run(`CREATE TABLE IF NOT EXISTS nodes (
         nodeId INTEGER PRIMARY KEY AUTOINCREMENT,
-        nodeName TEXT,
         userId INTEGER,
+        nodeName TEXT,
         description TEXT,
-        priority INTEGER,
-        status TEXT,
+        scope TEXT,
+        expectedOutput TEXT,
         tags TEXT,
-        dueDate DATETIME,
-        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-        completedAt DATETIME,
+        color TEXT,
+        size INTEGER,
         FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE
     )`);
     
