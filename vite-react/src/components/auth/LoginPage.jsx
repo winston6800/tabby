@@ -59,7 +59,7 @@ export default function LoginPage() {
 
   return (
     <main className="auth-wrapper">
-      <form className="auth-form" onSubmit={submit}>
+      <form className="auth-form" onSubmit={submit} data-testid="login-form">
         <div className="icon">🐱</div>
         <h2>Welcome back!</h2>
         <input

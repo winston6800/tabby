@@ -72,7 +72,7 @@ export default function SignupForm() {
 
   return (
     <main className="auth-wrapper">
-      <form className="auth-form" onSubmit={submit}>
+      <form className="auth-form" onSubmit={submit} data-testid="signup-form">
         <div className="icon">🐱</div>
         <h2>Welcome to Tabby!</h2>
         <input
