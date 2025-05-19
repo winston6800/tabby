@@ -1,4 +1,3 @@
-import db from './database';
 import express from "express";
 import {   
     getNodes,
