@@ -1,37 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import LoginPage from './components/auth/LoginPage';
+import SignupForm from './components/auth/SignupForm';
+import NodeCanvas from './components/NodeCanvas';
+import CustomNode from './components/CustomNode';
+import 'reactflow/dist/style.css';
 
+/**
+ * Node Types Configuration
+ * Maps custom node types to their components
+ * Currently only has the default CustomNode type
+ */
+const nodeTypes = {
+  custom: CustomNode,
+};
+
+/**
+ * Main App Component
+ * 
+ * Sets up routing for the application:
+ * - /login: Login page
+ * - /signup: Registration page
+ * - /canvas: Main node canvas UI
+ * - /: Redirects to canvas
+ * 
+ * TODO: Add authentication protection for routes
+ */
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    // Wrapping content in main element for semantic HTML and testing purposes
-    // This allows us to test the component's presence using getByRole('main')
-    <main>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </main>
-  )
+    <Router>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupForm />} />
+        <Route path="/canvas" element={<NodeCanvas nodeTypes={nodeTypes} />} />
+        <Route path="/" element={<Navigate to="/canvas" replace />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

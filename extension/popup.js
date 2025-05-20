@@ -240,4 +240,3 @@ document.addEventListener('DOMContentLoaded', () => {
       updateTimerDisplay(request.remainingTime);
     }
   });
-  
