@@ -6,8 +6,27 @@ let currentTask = null;
 let remainingTime = 25 * 60; // Default 25 minutes in seconds
 let hasNotified = false;
 let initialTimerDuration = 25 * 60; // Track the initial timer duration in seconds
+let tabSwitchCount = 0;
+let lastTabId = null;
+let lastWindowId = null;
 
+// Track tab switches
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  if (activeInfo.tabId !== lastTabId) {
+    tabSwitchCount++;
+    lastTabId = activeInfo.tabId;
+    chrome.storage.local.set({ tabSwitchCount });
+  }
+});
 
+// Track window focus switches
+chrome.windows.onFocusChanged.addListener((windowId) => {
+  if (windowId !== lastWindowId && windowId !== chrome.windows.WINDOW_ID_NONE) {
+    tabSwitchCount++;
+    lastWindowId = windowId;
+    chrome.storage.local.set({ tabSwitchCount });
+  }
+});
 
 // Request notification permission when extension is installed
 chrome.runtime.onInstalled.addListener(() => {
@@ -16,7 +35,8 @@ chrome.runtime.onInstalled.addListener(() => {
     unproductiveTime: 0,
     currentTask: null,
     isTimerRunning: false,
-    remainingTime: 25 * 60
+    remainingTime: 25 * 60,
+    tabSwitchCount: 0
   });
 });
 
@@ -159,6 +179,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         isRunning: isTimerRunning,
         remainingTime
       });
+      break;
+
+    case 'getTabSwitchCount':
+      sendResponse({ count: tabSwitchCount });
       break;
   }
   return true;
