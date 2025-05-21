@@ -4,6 +4,11 @@
 
 Tabby is a visual productivity tool designed for creatives who thrive in chaos but need a gentle anchor to bring their ideas to fruition. It provides a flexible node-map interface, allowing users to externalize their creative storm, connect ideas, and set gentle reminders for their own goals without feeling boxed in.
 
+## Documentation
+
+- [User Guide](USER_GUIDE.md) - Complete guide for using Tabby
+- [Developer Guide](DEVELOPER_GUIDE.md) - Guide for developers contributing to Tabby
+
 ## The Problem: Creative Chaos vs. Momentum (Scenario: Jordan, the Disorganized Creative)
 
 Meet Jordan, a design major brimming with ideas. Her workspace is a testament to her creativity: multiple Figma boards, half-finished Notion pages, a screenplay draft, and an Etsy shop with sporadic sales. While inspiration is never lacking, the sheer volume of thoughts and projects leads to a cycle of distraction and a feeling of unaccomplishment.
@@ -26,6 +31,17 @@ This setup allows Jordan to lay out her creative storm visually, see her commitm
 
 *(Future iterations will focus on features like gentle reminders based on her own stated priorities, e.g., "You wanted to finish the rough cut first.")*
 
+## Quick Start
+
+### For Users
+1. Visit the [Chrome Web Store](link to be added) to install the extension
+2. Follow the [User Guide](USER_GUIDE.md) to get started
+
+### For Developers
+1. Clone the repository
+2. Follow the setup instructions in the [Developer Guide](DEVELOPER_GUIDE.md)
+3. Start contributing!
+
 ## Toolchain and Processes
 
 Our development process and toolchain are set up to ensure quality and collaboration:
@@ -35,83 +51,23 @@ Our development process and toolchain are set up to ensure quality and collabora
 *   **Bug Tracking**: GitHub Issues are used to track bugs, feature requests, and tasks.
 *   **Build System**: The frontend application (`vite-react`) is built using Vite, a fast and modern build tool for web projects.
 *   **Testing**: We use Vitest for running unit and integration tests within the Vite environment. Test files are co-located with the source files (e.g., `*.test.jsx`).
-*   **Continuous Integration (CI)**: GitHub Actions are configured to automate linting, testing, and potentially builds on every push and pull request to the `main` branch. (Verify current CI setup and update if necessary).
+*   **Continuous Integration (CI)**: GitHub Actions are configured to automate linting, testing, and potentially builds on every push and pull request to the `main` branch.
 
-## Instructions for Course Staff (and Users)
+## Contributing
 
-### Prerequisites
+Please see our [Developer Guide](DEVELOPER_GUIDE.md) for detailed instructions on how to contribute to the project.
 
-*   Node.js (v18.x or later recommended)
-*   npm (v9.x or later) or yarn (v1.x or later)
+## License
 
-### 1. Setup & Installation
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-   1.  **Clone the repository:**
-       ```bash
-       git clone https://github.com/winston6800/tabby.git
-       cd tabby
-       ```
-   2.  **Navigate to the frontend project directory:**
-       ```bash
-       cd vite-react
-       ```
-   3.  **Install dependencies:**
-       Using npm:
-       ```bash
-       npm install
-       ```
-       Or using yarn:
-       ```bash
-       yarn install
-       ```
+## Contact
 
-### 2. Running the System (Development Mode)
-
-   1.  Ensure you are in the `vite-react` directory:
-       ```bash
-       cd tabby/vite-react  # If you are in the root 'tabby' directory
-       ```
-   2.  **Start the development server:**
-       Using npm:
-       ```bash
-       npm run dev
-       ```
-       Or using yarn:
-       ```bash
-       yarn dev
-       ```
-   3.  Open your web browser and navigate to `http://localhost:5173` (or the port specified in your terminal if different).
-
-### 3. Building the System (Production)
-
-   1.  Ensure you are in the `vite-react` directory.
-   2.  **Run the build command:**
-       Using npm:
-       ```bash
-       npm run build
-       ```
-       Or using yarn:
-       ```bash
-       yarn build
-       ```
-   3.  The production-ready static assets will be generated in the `vite-react/dist` directory.
-
-### 4. Testing the System
-
-   1.  Ensure you are in the `vite-react` directory.
-   2.  **Run the tests:**
-       Using npm:
-       ```bash
-       npm test
-       ```
-       Or using yarn:
-       ```bash
-       yarn test
-       ```
-       This will execute the test suite using Vitest.
+- GitHub Issues: [Create an issue](https://github.com/winston6800/tabby/issues)
 
 ---
-This README aims to provide all necessary information to understand, build, run, and test the Tabby Beta release.
+
+*This README is a living document and will be updated as the project evolves. Last updated: [Current Date]*
 
   
   
