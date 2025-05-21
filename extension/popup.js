@@ -240,3 +240,13 @@ document.addEventListener('DOMContentLoaded', () => {
       updateTimerDisplay(request.remainingTime);
     }
   });
+
+  function updateTabSwitchCount() {
+    chrome.runtime.sendMessage({ action: 'getTabSwitchCount' }, (response) => {
+      if (response) {
+        document.getElementById('tabSwitchCount').textContent = response.count;
+      }
+    });
+  }
+  
+  setInterval(updateTabSwitchCount, 1000);
