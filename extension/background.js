@@ -10,6 +10,13 @@ let tabSwitchCount = 0;
 let lastTabId = null;
 let lastWindowId = null;
 
+// Initialize tab switch count from storage when extension starts
+chrome.storage.local.get(['tabSwitchCount'], (result) => {
+  if (result.tabSwitchCount !== undefined) {
+    tabSwitchCount = result.tabSwitchCount;
+  }
+});
+
 // Track tab switches
 chrome.tabs.onActivated.addListener((activeInfo) => {
   if (activeInfo.tabId !== lastTabId) {
