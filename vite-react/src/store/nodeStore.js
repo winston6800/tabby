@@ -18,8 +18,15 @@ const useNodeStore = create((set, get) => ({
   })),
   
   onNodesChange: (changes) => {
-    set({
-      nodes: applyNodeChanges(changes, get().nodes),
+    set((state) => {
+      const newNodes = applyNodeChanges(changes, state.nodes);
+      console.log('Sending node update to extension:', newNodes);
+      // Notify extension about node updates
+      window.postMessage({
+        type: 'NODE_UPDATE',
+        nodes: newNodes
+      }, 'http://localhost:5173');
+      return { nodes: newNodes };
     });
   },
   

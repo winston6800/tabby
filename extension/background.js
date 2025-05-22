@@ -6,17 +6,38 @@ let currentTask = null;
 let remainingTime = 25 * 60; // Default 25 minutes in seconds
 let hasNotified = false;
 let initialTimerDuration = 25 * 60; // Track the initial timer duration in seconds
+let tabSwitchCount = 0;
+let lastTabId = null;
+let lastWindowId = null;
 
+// Track tab switches
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  if (activeInfo.tabId !== lastTabId) {
+    tabSwitchCount++;
+    lastTabId = activeInfo.tabId;
+    chrome.storage.local.set({ tabSwitchCount });
+  }
+});
 
+// Track window focus switches
+chrome.windows.onFocusChanged.addListener((windowId) => {
+  if (windowId !== lastWindowId && windowId !== chrome.windows.WINDOW_ID_NONE) {
+    tabSwitchCount++;
+    lastWindowId = windowId;
+    chrome.storage.local.set({ tabSwitchCount });
+  }
+});
 
-// Request notification permission when extension is installed
+// Initialize node storage when extension is installed
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.set({
     productiveTime: 0,
     unproductiveTime: 0,
     currentTask: null,
     isTimerRunning: false,
-    remainingTime: 25 * 60
+    remainingTime: 25 * 60,
+    tabSwitchCount: 0,
+    nodes: [] // Initialize empty nodes array
   });
 });
 
@@ -98,8 +119,9 @@ function updateTimer() {
 // Start the timer update interval
 setInterval(updateTimer, 1000);
 
-// Listen for messages from popup
+// Listen for messages from popup and content script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log('Background script received message:', request);
   switch (request.action) {
     case 'startTimer':
       // Request notification permission when starting the timer
@@ -160,6 +182,34 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         remainingTime
       });
       break;
+
+    case 'getTabSwitchCount':
+      sendResponse({ count: tabSwitchCount });
+      break;
+
+    case 'updateNodes':
+      console.log('Updating nodes in storage:', request.nodes);
+      // Update nodes in storage
+      chrome.storage.local.set({ nodes: request.nodes }, () => {
+        console.log('Nodes updated in storage');
+        // Notify popup about the update
+        chrome.runtime.sendMessage({ 
+          action: 'nodesUpdated',
+          nodes: request.nodes
+        }, (response) => {
+          console.log('Popup response:', response);
+        });
+      });
+      sendResponse({ success: true });
+      break;
+
+    case 'getNodes':
+      console.log('Getting nodes from storage');
+      chrome.storage.local.get(['nodes'], (result) => {
+        console.log('Retrieved nodes from storage:', result.nodes);
+        sendResponse({ nodes: result.nodes || [] });
+      });
+      return true; // Keep the message channel open for async response
   }
   return true;
 }); 
