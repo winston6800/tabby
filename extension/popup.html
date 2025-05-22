@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tabby</title>
+    <style>
+      body {
+        width: 400px;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+      }
+      .section {
+        display: none;
+        margin-top: 20px;
+      }
+      .section.active {
+        display: block;
+      }
+      .nav-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .nav-button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: #4CAF50;
+        color: white;
+        cursor: pointer;
+      }
+      .nav-button:hover {
+        background-color: #45a049;
+      }
+      .nav-button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+      .timer-display {
+        font-size: 48px;
+        text-align: center;
+        margin: 20px 0;
+        cursor: pointer;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin: 20px 0;
+      }
+      .stat-box {
+        padding: 10px;
+        background-color: #f5f5f5;
+        border-radius: 5px;
+        text-align: center;
+      }
+      .node-map {
+        height: 300px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-top: 10px;
+      }
+      .check-in-container {
+        text-align: center;
+        margin: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Tabby</h1>
+    
+    <div class="nav-buttons">
+      <button class="nav-button" data-section="overview">Overview</button>
+      <button class="nav-button" data-section="timer">Timer</button>
+      <button class="nav-button" data-section="node-map">Node Map</button>
+    </div>
+
+    <div id="overview" class="section active">
+      <h2>Overview</h2>
+      <div class="check-in-container">
+        <button id="checkInButton" class="nav-button">Check In</button>
+      </div>
+      <div class="stats">
+        <div class="stat-box">
+          <h3>Streak</h3>
+          <p>Days checked in: <span id="counter">0</span></p>
+        </div>
+        <div class="stat-box">
+          <h3>Productive Time</h3>
+          <p id="productiveTime">0h 0m</p>
+        </div>
+        <div class="stat-box">
+          <h3>Unproductive Time</h3>
+          <p id="unproductiveTime">0h 0m</p>
+        </div>
+        <div class="stat-box">
+          <h3>Tasks Completed</h3>
+          <p id="tasksCompleted">0</p>
+        </div>
+        <div class="stat-box">
+          <h3>Tab Switches</h3>
+          <p id="tabSwitchCount">0</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="timer" class="section">
+      <h2>Focus Timer</h2>
+      <div class="timer-display" id="timerDisplay">25:00</div>
+      <div class="timer-controls">
+        <button id="startTimer" class="nav-button">Start</button>
+        <button id="stopTimer" class="nav-button" disabled>Stop</button>
+      </div>
+      <div class="stats">
+        <div class="stat-box">
+          <h3>Current Task</h3>
+          <p id="currentTask">None</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="node-map" class="section">
+      <h2> Node Map</h2>
+      <div class="node-map">
+        </div>
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

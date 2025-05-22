@@ -71,8 +71,8 @@ export default function SignupForm() {
   };
 
   return (
-    <div className="auth-wrapper">
-      <form className="auth-form" onSubmit={submit}>
+    <main className="auth-wrapper">
+      <form className="auth-form" onSubmit={submit} data-testid="signup-form">
         <div className="icon">🐱</div>
         <h2>Welcome to Tabby!</h2>
         <input
@@ -101,6 +101,6 @@ export default function SignupForm() {
           <button type="button" className="alt-btn">Back to canvas</button>
         </Link>
       </form>
-    </div>
+    </main>
   );
 } 

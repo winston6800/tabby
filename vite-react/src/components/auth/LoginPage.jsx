@@ -58,8 +58,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-wrapper">
-      <form className="auth-form" onSubmit={submit}>
+    <main className="auth-wrapper">
+      <form className="auth-form" onSubmit={submit} data-testid="login-form">
         <div className="icon">🐱</div>
         <h2>Welcome back!</h2>
         <input
@@ -90,6 +90,6 @@ export default function LoginPage() {
           </button>
         </Link>
       </form>
-    </div>
+    </main>
   );
 } 

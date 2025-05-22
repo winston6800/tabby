@@ -1,4 +1,4 @@
-import db from './database';
+import db from "./database";
 
 export interface User {
   userId?: number;
@@ -9,7 +9,11 @@ export interface User {
 /**
  * CREATE: Inserts a new user into the database
  */
-function createUser(userName: string, password: string, callback: (err: Error | null, userId?: number) => void): void {
+function createUser(
+  userName: string,
+  password: string,
+  callback: (err: Error | null, userId?: number) => void
+): void {
   const sql = `INSERT INTO users (userName, password) VALUES (?, ?)`;
   db.run(sql, [userName, password], function (this: any, err: Error | null) {
     if (err) return callback(err);
@@ -20,7 +24,10 @@ function createUser(userName: string, password: string, callback: (err: Error | 
 /**
  * READ: Find user by userName
  */
-function findUserByUsername(userName: string, callback: (err: Error | null, user?: User) => void): void {
+function findUserByUsername(
+  userName: string,
+  callback: (err: Error | null, user?: User) => void
+): void {
   const sql = `SELECT * FROM users WHERE userName = ?`;
   db.get(sql, [userName], (err: Error | null, row: User) => {
     if (err) return callback(err);
@@ -31,7 +38,11 @@ function findUserByUsername(userName: string, callback: (err: Error | null, user
 /**
  * UPDATE: Edits a user's username
  */
-function updateUsername(userName: string, newUserName: string, callback: (err: Error | null, result?: { message: string }) => void): void {
+function updateUsername(
+  userName: string,
+  newUserName: string,
+  callback: (err: Error | null, result?: { message: string }) => void
+): void {
   const sql = `UPDATE users SET username = ? WHERE userName = ?`;
   db.run(sql, [newUserName, userName], function (err: Error | null) {
     if (err) return callback(err);
@@ -42,7 +53,11 @@ function updateUsername(userName: string, newUserName: string, callback: (err: E
 /**
  * UPDATE: Edits a user's password
  */
-function updatePassword(userName: string, newPassword: string, callback: (err: Error | null, result?: { message: string }) => void): void {
+function updatePassword(
+  userName: string,
+  newPassword: string,
+  callback: (err: Error | null, result?: { message: string }) => void
+): void {
   const sql = `UPDATE users SET password = ? WHERE userName = ?`;
   db.run(sql, [newPassword, userName], function (err: Error | null) {
     if (err) return callback(err);
@@ -53,7 +68,10 @@ function updatePassword(userName: string, newPassword: string, callback: (err: E
 /**
  * DELETE: remove a user
  */
-function deleteUser(userId: number, callback: (err: Error | null, result?: { message: string }) => void): void {
+function deleteUser(
+  userId: number,
+  callback: (err: Error | null, result?: { message: string }) => void
+): void {
   const sql = `DELETE FROM users WHERE userId = ?`;
   db.run(sql, [userId], function (err: Error | null) {
     if (err) return callback(err);
@@ -61,10 +79,10 @@ function deleteUser(userId: number, callback: (err: Error | null, result?: { mes
   });
 }
 
-export { 
+export {
   createUser,
   findUserByUsername,
   updateUsername,
   updatePassword,
-  deleteUser
-  };
+  deleteUser,
+};
