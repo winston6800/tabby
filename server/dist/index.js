@@ -11,11 +11,11 @@ const app = (0, express_1.default)();
 const PORT = process.env.PORT || 4000;
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-app.get('/', (_req, res) => {
-    res.send('Server is running');
+app.get("/", (_req, res) => {
+    res.send("Server is running");
 });
-app.use('/signup', register_1.default);
-app.use('/login', login_1.default);
+app.use("/signup", register_1.default);
+app.use("/login", login_1.default);
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
 });

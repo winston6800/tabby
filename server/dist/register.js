@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
             if (err) {
                 return res.status(500).json({ error: +err });
             }
-            res.status(201).json({ message: 'User registered successfully', userId });
+            res.status(201).json({ message: "User registered successfully", userId });
         });
     }
     catch (e) {

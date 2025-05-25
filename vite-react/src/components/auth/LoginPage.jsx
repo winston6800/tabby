@@ -44,7 +44,8 @@ export default function LoginPage() {
       });
 
       const result = await response.json();
-      if (response.ok) {
+      if (response.ok && result.token) {
+        localStorage.setItem("authToken", result.token);
         navigate('/canvas');
       } else {
         alert(`Login failed: ${result.error}`);
