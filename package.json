@@ -7,6 +7,9 @@
 
     "build:frontend": "npm run build --prefix vite-react",
     "build:backend": "npm run build --prefix server",
-    "build": "npm run build:frontend && npm run build:backend"
+    "build": "npm run build:frontend && npm run build:backend",
+
+    "preview:frontend": "npm run preview --prefix vite-react",
+    "preview": "npm run preview:frontend"
   }
 }
