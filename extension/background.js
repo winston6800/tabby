@@ -10,24 +10,6 @@ let tabSwitchCount = 0;
 let lastTabId = null;
 let lastWindowId = null;
 
-// Track tab switches
-chrome.tabs.onActivated.addListener((activeInfo) => {
-  if (activeInfo.tabId !== lastTabId) {
-    tabSwitchCount++;
-    lastTabId = activeInfo.tabId;
-    chrome.storage.local.set({ tabSwitchCount });
-  }
-});
-
-// Track window focus switches
-chrome.windows.onFocusChanged.addListener((windowId) => {
-  if (windowId !== lastWindowId && windowId !== chrome.windows.WINDOW_ID_NONE) {
-    tabSwitchCount++;
-    lastWindowId = windowId;
-    chrome.storage.local.set({ tabSwitchCount });
-  }
-});
-
 // Initialize node storage when extension is installed
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.set({
