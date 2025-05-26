@@ -10,6 +10,12 @@
     "build": "npm run build:frontend && npm run build:backend",
 
     "preview:frontend": "npm run preview --prefix vite-react",
-    "preview": "npm run preview:frontend"
+    "start:backend": "npm start --prefix server",
+    "start": "npm run build && npm run test && concurrently \"npm run start:backend\" \"npm run preview:frontend\""
+
+  },
+  
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }
