@@ -1,0 +1,8 @@
+{
+  "name": "tabby",
+  "scripts": {
+    "test:frontend": "npm test --prefix vite-react",
+    "test:backend": "npm test --prefix server",
+    "test": "npm run test:frontend && npm run test:backend"
+  }
+}
