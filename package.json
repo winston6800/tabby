@@ -3,6 +3,10 @@
   "scripts": {
     "test:frontend": "npm test --prefix vite-react",
     "test:backend": "npm test --prefix server",
-    "test": "npm run test:frontend && npm run test:backend"
+    "test": "npm run test:frontend && npm run test:backend",
+
+    "build:frontend": "npm run build --prefix vite-react",
+    "build:backend": "npm run build --prefix server",
+    "build": "npm run build:frontend && npm run build:backend"
   }
 }
