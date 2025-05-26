@@ -17,7 +17,9 @@ function createEdge(fromNodeId, toNodeId, callback) {
     database_1.default.run(sql, [fromNodeId, toNodeId], function (err) {
         if (err)
             return callback(err, null);
-        callback(null, { message: `edge created successfully from node id ${fromNodeId} to node id ${toNodeId}` });
+        callback(null, {
+            message: `edge created successfully from node id ${fromNodeId} to node id ${toNodeId}`,
+        });
     });
 }
 /**

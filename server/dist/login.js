@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
         // Compare the passwords
         const passwordMatch = await (0, bcrypt_1.compare)(password, user.password);
         if (!passwordMatch) {
-            return res.status(401).json({ error: 'Authentication failed' });
+            return res.status(401).json({ error: "Authentication failed" });
         }
         res.status(200).json({ message: "Successfully logged in " + username });
     });

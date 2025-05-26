@@ -3,6 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const navButtons = document.querySelectorAll('.nav-button[data-section]');
     const sections = document.querySelectorAll('.section');
     
+    updateTabSwitchCount();
+    
+    // update tab switch count every second
+    setInterval(updateTabSwitchCount, 1000);
+    
     navButtons.forEach(button => {
       button.addEventListener('click', () => {
         const targetSection = button.dataset.section;
@@ -295,5 +300,3 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-  
-  setInterval(updateTabSwitchCount, 1000);
