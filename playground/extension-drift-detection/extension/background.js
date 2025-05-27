@@ -10,32 +10,111 @@ let tabSwitchCount = 0;
 let lastTabId = null;
 let lastWindowId = null;
 
+<<<<<<< HEAD
 // Initialize tab switch count from storage when extension starts
+=======
+// initialize tab switch count from storage when extension starts
+>>>>>>> feature/drift-detection
 chrome.storage.local.get(['tabSwitchCount'], (result) => {
   if (result.tabSwitchCount !== undefined) {
     tabSwitchCount = result.tabSwitchCount;
   }
 });
 
+<<<<<<< HEAD
 // Track tab switches
+=======
+function notifyTabSwitchThreshold() {
+  console.log('Attempting to show notification...');
+  
+  // check if we have notification permission
+  chrome.permissions.contains({
+    permissions: ['notifications']
+  }, (hasPermission) => {
+    if (!hasPermission) {
+      console.log('No notification permission, requesting...');
+      chrome.permissions.request({
+        permissions: ['notifications']
+      }, (granted) => {
+        if (granted) {
+          console.log('Notification permission granted, showing notification');
+          showNotification();
+        } else {
+          console.log('Notification permission denied');
+        }
+      });
+    } else {
+      console.log('Notification permission exists, showing notification');
+      showNotification();
+    }
+  });
+}
+
+function showNotification() {
+  chrome.notifications.create({
+    type: 'basic',
+    iconUrl: chrome.runtime.getURL('icon.jpg'),
+    title: 'Tab Switch Alert',
+    message: 'You\'ve switched tabs 25 times. Consider taking a short break or refocusing on your task.',
+    priority: 2,
+    requireInteraction: true,
+    silent: false
+  }, (notificationId) => {
+    if (chrome.runtime.lastError) {
+      console.error('Notification error:', chrome.runtime.lastError);
+    } else {
+      console.log('Notification created with ID:', notificationId);
+    }
+  });
+}
+
+// track tab switches
+>>>>>>> feature/drift-detection
 chrome.tabs.onActivated.addListener((activeInfo) => {
   if (activeInfo.tabId !== lastTabId) {
     tabSwitchCount++;
     lastTabId = activeInfo.tabId;
     chrome.storage.local.set({ tabSwitchCount });
+<<<<<<< HEAD
   }
 });
 
 // Track window focus switches
+=======
+    console.log('Tab switch detected. Count:', tabSwitchCount);
+    
+    // check if we've hit the threshold
+    // in the future make this customizable
+    if (tabSwitchCount % 25 === 0) {
+      console.log('Tab switch threshold reached!');
+      notifyTabSwitchThreshold();
+    }
+  }
+});
+
+// track window focus switches
+>>>>>>> feature/drift-detection
 chrome.windows.onFocusChanged.addListener((windowId) => {
   if (windowId !== lastWindowId && windowId !== chrome.windows.WINDOW_ID_NONE) {
     tabSwitchCount++;
     lastWindowId = windowId;
     chrome.storage.local.set({ tabSwitchCount });
+<<<<<<< HEAD
   }
 });
 
 // Request notification permission when extension is installed
+=======
+    
+    // check if we've hit the threshold
+    if (tabSwitchCount % 25 === 0) {
+      notifyTabSwitchThreshold();
+    }
+  }
+});
+
+// request notification permission when extension is installed
+>>>>>>> feature/drift-detection
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.set({
     productiveTime: 0,
@@ -51,7 +130,11 @@ function notifyTimerComplete() {
   if (!hasNotified) {
     hasNotified = true;
     
+<<<<<<< HEAD
     // First check if we have notification permission
+=======
+    // first check if we have notification permission
+>>>>>>> feature/drift-detection
     chrome.permissions.contains({
       permissions: ['notifications']
     }, (hasPermission) => {
@@ -60,19 +143,31 @@ function notifyTimerComplete() {
         return;
       }
 
+<<<<<<< HEAD
       // Create the notification with more options
+=======
+      // create the notification with more options
+>>>>>>> feature/drift-detection
       chrome.notifications.create({
         type: 'basic',
         iconUrl: chrome.runtime.getURL('icon.jpg'),
         title: 'Timer Complete!',
         message: 'Your focus session has ended.',
         priority: 2,
+<<<<<<< HEAD
         requireInteraction: true, // Keep notification visible until user interacts
         silent: false // Ensure sound plays
       }, (notificationId) => {
         if (chrome.runtime.lastError) {
           console.error('Notification error:', chrome.runtime.lastError);
           // Try to get more details about the error
+=======
+        requireInteraction: true, // keep notification visible until user interacts
+        silent: false // ensure sound plays
+      }, (notificationId) => {
+        if (chrome.runtime.lastError) {
+          console.error('Notification error:', chrome.runtime.lastError);
+>>>>>>> feature/drift-detection
           console.error('Error details:', {
             message: chrome.runtime.lastError.message,
             stack: chrome.runtime.lastError.stack
@@ -80,7 +175,11 @@ function notifyTimerComplete() {
         } else {
           console.log('Notification created with ID:', notificationId);
           
+<<<<<<< HEAD
           // Add click listener for the notification
+=======
+          // add click listener for the notification
+>>>>>>> feature/drift-detection
           chrome.notifications.onClicked.addListener((clickedId) => {
             if (clickedId === notificationId) {
               console.log('Notification clicked');
