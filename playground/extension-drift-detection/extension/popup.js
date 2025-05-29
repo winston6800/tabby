@@ -392,9 +392,16 @@ document.addEventListener('DOMContentLoaded', () => {
         li.textContent = domain;
         
         const deleteButton = document.createElement('button');
-        deleteButton.textContent = '×';
+        deleteButton.textContent = 'Delete';
         deleteButton.className = 'delete-domain';
         deleteButton.style.marginLeft = '10px';
+        deleteButton.style.padding = '2px 8px';
+        deleteButton.style.border = '1px solid #ccc';
+        deleteButton.style.borderRadius = '3px';
+        deleteButton.style.backgroundColor = '#fff';
+        deleteButton.style.cursor = 'pointer';
+        deleteButton.style.fontSize = '12px';
+        
         deleteButton.onclick = () => {
             chrome.storage.local.get(['nonProductiveDomains'], (result) => {
                 const domains = result.nonProductiveDomains || [];
