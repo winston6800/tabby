@@ -229,6 +229,38 @@
           </div>
           <button id="saveSettings" class="nav-button">Save Settings</button>
         </div>
+
+        <!-- Add Non-Productive Domains Section -->
+        <div class="settings-section">
+          <h3>Non-Productive Domains</h3>
+          <p>Add domains that should be counted as non-productive (e.g., facebook.com, twitter.com)</p>
+          <div class="setting-item">
+            <input type="text" id="newDomain" placeholder="Enter domain (e.g., facebook.com)" style="width: 200px;">
+            <button id="addDomain" class="nav-button">Add Domain</button>
+          </div>
+          <div class="domain-list">
+            <h4>Current Non-Productive Domains</h4>
+            <ul id="domainList" style="list-style: none; padding: 0;">
+              <!-- Domains will be populated here -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="notProductiveDomains" class="section">
+      <h2>Not Productive Domains</h2>
+      <div class="settings-container">
+        <div class="settings-section">
+          <h3>Manage Not Productive Domains</h3>
+          <div class="setting-item">
+            <input type="text" id="newDomain" placeholder="Enter domain (e.g., facebook.com)">
+            <button id="addDomain" class="nav-button">Add Domain</button>
+          </div>
+          <ul id="domainList">
+            <!-- Domains will be populated here -->
+          </ul>
+        </div>
       </div>
     </div>
 

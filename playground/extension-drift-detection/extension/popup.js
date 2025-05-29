@@ -372,6 +372,69 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+
+    // Non-productive domains management
+    const newDomainInput = document.getElementById('newDomain');
+    const addDomainButton = document.getElementById('addDomain');
+    const domainList = document.getElementById('domainList');
+
+    // Load existing domains
+    chrome.storage.local.get(['nonProductiveDomains'], (result) => {
+        if (result.nonProductiveDomains) {
+            result.nonProductiveDomains.forEach(domain => {
+                addDomainToList(domain);
+            });
+        }
+    });
+
+    function addDomainToList(domain) {
+        const li = document.createElement('li');
+        li.textContent = domain;
+        
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = '×';
+        deleteButton.className = 'delete-domain';
+        deleteButton.style.marginLeft = '10px';
+        deleteButton.onclick = () => {
+            chrome.storage.local.get(['nonProductiveDomains'], (result) => {
+                const domains = result.nonProductiveDomains || [];
+                const updatedDomains = domains.filter(d => d !== domain);
+                chrome.storage.local.set({ nonProductiveDomains: updatedDomains });
+                li.remove();
+            });
+        };
+        
+        li.appendChild(deleteButton);
+        domainList.appendChild(li);
+    }
+
+    addDomainButton.addEventListener('click', () => {
+        const domain = newDomainInput.value.trim().toLowerCase();
+        if (!domain) {
+            alert('Please enter a domain');
+            return;
+        }
+
+        chrome.storage.local.get(['nonProductiveDomains'], (result) => {
+            const domains = result.nonProductiveDomains || [];
+            if (domains.includes(domain)) {
+                alert('This domain is already in the list');
+                return;
+            }
+
+            domains.push(domain);
+            chrome.storage.local.set({ nonProductiveDomains: domains }, () => {
+                addDomainToList(domain);
+                newDomainInput.value = '';
+            });
+        });
+    });
+
+    newDomainInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            addDomainButton.click();
+        }
+    });
   });
   
   // Listen for messages from background script

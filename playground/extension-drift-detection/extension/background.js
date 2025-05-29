@@ -14,11 +14,16 @@ let focusSettings = {
     timeWindow: 2 // minutes
 };
 let previousTabId = null; // store the previous tab ID for restoration
+let lastProductiveTabId = null; // store the last productive tab ID
+let nonProductiveDomains = []; // Array to store non-productive domains
 
 // initialize tab switch count from storage when extension starts
-chrome.storage.local.get(['tabSwitchCount'], (result) => {
+chrome.storage.local.get(['tabSwitchCount', 'nonProductiveDomains'], (result) => {
   if (result.tabSwitchCount !== undefined) {
     tabSwitchCount = result.tabSwitchCount;
+  }
+  if (result.nonProductiveDomains) {
+    nonProductiveDomains = result.nonProductiveDomains;
   }
 });
 
@@ -98,8 +103,8 @@ function checkTabSwitchThreshold() {
 // add notification button click handler
 chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) => {
   if (buttonIndex === 0) { // return to Task button
-    if (previousTabId) {
-      chrome.tabs.update(previousTabId, { active: true }, (tab) => {
+    if (lastProductiveTabId) {
+      chrome.tabs.update(lastProductiveTabId, { active: true }, (tab) => {
         if (chrome.runtime.lastError) {
           console.error('Error restoring tab:', chrome.runtime.lastError);
         }
@@ -114,28 +119,85 @@ chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) =
 // track tab switches
 chrome.tabs.onActivated.addListener((activeInfo) => {
     if (activeInfo.tabId !== lastTabId) {
-        previousTabId = lastTabId; // store the previous tab before updating
-        tabSwitchCount++;
-        lastTabId = activeInfo.tabId;
-        chrome.storage.local.set({ tabSwitchCount });
-        
-        // Add current time to tab switch times
-        tabSwitchTimes.push(Date.now());
-        checkTabSwitchThreshold();
+        // Get the URL of the newly activated tab
+        chrome.tabs.get(activeInfo.tabId, (tab) => {
+            if (chrome.runtime.lastError) {
+                console.error('Error getting tab:', chrome.runtime.lastError);
+                return;
+            }
+            
+            // Extract domain from URL
+            let domain = '';
+            try {
+                domain = new URL(tab.url).hostname;
+                console.log('Current domain:', domain);
+                console.log('Non-productive domains list:', nonProductiveDomains);
+                console.log('Is domain non-productive?', nonProductiveDomains.some(d => domain.includes(d)));
+            } catch (e) {
+                console.error('Error parsing URL:', e);
+                return;
+            }
+
+            // Only increment counter if the domain is in non-productive list
+            if (nonProductiveDomains.some(d => domain.includes(d))) {
+                console.log('Incrementing counter for non-productive domain:', domain);
+                previousTabId = lastTabId; // store the previous tab before updating
+                tabSwitchCount++;
+                lastTabId = activeInfo.tabId;
+                chrome.storage.local.set({ tabSwitchCount });
+                
+                // Add current time to tab switch times
+                tabSwitchTimes.push(Date.now());
+                checkTabSwitchThreshold();
+            } else {
+                console.log('Domain not in non-productive list:', domain);
+                // Update last productive tab if this is a productive domain
+                lastProductiveTabId = activeInfo.tabId;
+                // Still update lastTabId but don't increment counter
+                lastTabId = activeInfo.tabId;
+            }
+        });
     }
 });
 
 // track window focus switches
 chrome.windows.onFocusChanged.addListener((windowId) => {
     if (windowId !== lastWindowId && windowId !== chrome.windows.WINDOW_ID_NONE) {
-        previousTabId = lastTabId; // store the previous tab before updating
-        tabSwitchCount++;
-        lastWindowId = windowId;
-        chrome.storage.local.set({ tabSwitchCount });
-        
-        // add current time to tab switch times
-        tabSwitchTimes.push(Date.now());
-        checkTabSwitchThreshold();
+        // Get the active tab in the focused window
+        chrome.tabs.query({active: true, windowId: windowId}, (tabs) => {
+            if (tabs.length === 0) return;
+            
+            const tab = tabs[0];
+            let domain = '';
+            try {
+                domain = new URL(tab.url).hostname;
+                console.log('Window switch - Current domain:', domain);
+                console.log('Window switch - Non-productive domains list:', nonProductiveDomains);
+                console.log('Window switch - Is domain non-productive?', nonProductiveDomains.some(d => domain.includes(d)));
+            } catch (e) {
+                console.error('Error parsing URL:', e);
+                return;
+            }
+
+            // Only increment counter if the domain is in non-productive list
+            if (nonProductiveDomains.some(d => domain.includes(d))) {
+                console.log('Window switch - Incrementing counter for non-productive domain:', domain);
+                previousTabId = lastTabId; // store the previous tab before updating
+                tabSwitchCount++;
+                lastWindowId = windowId;
+                chrome.storage.local.set({ tabSwitchCount });
+                
+                // add current time to tab switch times
+                tabSwitchTimes.push(Date.now());
+                checkTabSwitchThreshold();
+            } else {
+                console.log('Window switch - Domain not in non-productive list:', domain);
+                // Update last productive tab if this is a productive domain
+                lastProductiveTabId = tab.id;
+                // Still update lastWindowId but don't increment counter
+                lastWindowId = windowId;
+            }
+        });
     }
 });
 
