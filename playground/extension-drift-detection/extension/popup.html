@@ -63,6 +63,70 @@
         text-align: center;
         margin: 20px 0;
       }
+      .settings-container {
+        padding: 20px;
+      }
+      
+      .settings-section {
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      
+      .setting-item {
+        margin: 15px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .setting-item label {
+        min-width: 150px;
+      }
+      
+      .setting-item input[type="number"] {
+        width: 60px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+      
+      .setting-item select {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+      
+      #saveSettings {
+        margin-top: 20px;
+      }
+      
+      .preset-buttons {
+        display: flex;
+        gap: 10px;
+        margin: 15px 0;
+      }
+      
+      .preset-list {
+        margin: 15px 0;
+      }
+      
+      .preset-list select {
+        width: 100%;
+        margin: 10px 0;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+      
+      #deletePreset {
+        background-color: #ff4444;
+      }
+      
+      #deletePreset:hover {
+        background-color: #cc0000;
+      }
     </style>
   </head>
   <body>
@@ -73,6 +137,7 @@
       <button class="nav-button" data-section="timer">Timer</button>
       <button class="nav-button" data-section="node-map">Node Map</button>
       <button class="nav-button" data-section="focus-mode">Focus Mode</button>
+      <button class="nav-button" data-section="settings">Settings</button>
     </div>
 
     <div id="overview" class="section active">
@@ -128,6 +193,41 @@
         <div class="stat-box">
           <h3>Tab Switches</h3>
           <p id="tabSwitchCount">0</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="settings" class="section">
+      <h2>Settings</h2>
+      <div class="settings-container">
+        <div class="settings-section">
+          <h3>Focus Mode Settings</h3>
+          <div class="setting-item">
+            <label for="switchThreshold">Tab Switch Threshold:</label>
+            <input type="number" id="switchThreshold" min="1" max="100" value="25">
+            <span>switches</span>
+          </div>
+          <div class="setting-item">
+            <label for="timeWindow">Time Window:</label>
+            <input type="number" id="timeWindow" min="1" max="60" value="2">
+            <span>minutes</span>
+          </div>
+          <div class="setting-item">
+            <label for="presetName">Preset Name:</label>
+            <input type="text" id="presetName" placeholder="Enter preset name">
+          </div>
+          <div class="preset-buttons">
+            <button id="savePreset" class="nav-button">Save as Preset</button>
+            <button id="loadPreset" class="nav-button">Load Preset</button>
+          </div>
+          <div class="preset-list">
+            <h4>Saved Presets</h4>
+            <select id="presetSelect" size="3">
+              <!-- Presets will be populated here -->
+            </select>
+            <button id="deletePreset" class="nav-button">Delete Selected</button>
+          </div>
+          <button id="saveSettings" class="nav-button">Save Settings</button>
         </div>
       </div>
     </div>

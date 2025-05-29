@@ -9,6 +9,11 @@ let initialTimerDuration = 25 * 60; // Track the initial timer duration in secon
 let tabSwitchCount = 0;
 let lastTabId = null;
 let lastWindowId = null;
+let focusSettings = {
+    switchThreshold: 25,
+    timeWindow: 2 // minutes
+};
+let previousTabId = null; // store the previous tab ID for restoration
 
 // initialize tab switch count from storage when extension starts
 chrome.storage.local.get(['tabSwitchCount'], (result) => {
@@ -16,6 +21,16 @@ chrome.storage.local.get(['tabSwitchCount'], (result) => {
     tabSwitchCount = result.tabSwitchCount;
   }
 });
+
+// initialize settings from storage
+chrome.storage.local.get(['focusSettings'], (result) => {
+    if (result.focusSettings) {
+        focusSettings = result.focusSettings;
+    }
+});
+
+// track tab switches with time window
+let tabSwitchTimes = [];
 
 function notifyTabSwitchThreshold() {
   console.log('Attempting to show notification...');
@@ -48,10 +63,14 @@ function showNotification() {
     type: 'basic',
     iconUrl: chrome.runtime.getURL('icon.jpg'),
     title: 'Tab Switch Alert',
-    message: 'You\'ve switched tabs 25 times. Consider taking a short break or refocusing on your task.',
+    message: 'You\'ve switched tabs frequently. Would you like to return to your previous task?',
     priority: 2,
     requireInteraction: true,
-    silent: false
+    silent: false,
+    buttons: [
+      { title: 'Return to Task' },
+      { title: 'Dismiss' }
+    ]
   }, (notificationId) => {
     if (chrome.runtime.lastError) {
       console.error('Notification error:', chrome.runtime.lastError);
@@ -61,35 +80,63 @@ function showNotification() {
   });
 }
 
-// track tab switches
-chrome.tabs.onActivated.addListener((activeInfo) => {
-  if (activeInfo.tabId !== lastTabId) {
-    tabSwitchCount++;
-    lastTabId = activeInfo.tabId;
-    chrome.storage.local.set({ tabSwitchCount });
-    console.log('Tab switch detected. Count:', tabSwitchCount);
+function checkTabSwitchThreshold() {
+    const now = Date.now();
+    const timeWindowMs = focusSettings.timeWindow * 60 * 1000; // convert minutes to milliseconds
     
-    // check if we've hit the threshold
-    // in the future make this customizable
-    if (tabSwitchCount % 25 === 0) {
-      console.log('Tab switch threshold reached!');
-      notifyTabSwitchThreshold();
+    // Remove old tab switches outside the time window
+    tabSwitchTimes = tabSwitchTimes.filter(time => now - time < timeWindowMs);
+    
+    // Check if we've hit the threshold
+    if (tabSwitchTimes.length >= focusSettings.switchThreshold) {
+        notifyTabSwitchThreshold();
+        // Clear the array after notification
+        tabSwitchTimes = [];
+    }
+}
+
+// add notification button click handler
+chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) => {
+  if (buttonIndex === 0) { // return to Task button
+    if (previousTabId) {
+      chrome.tabs.update(previousTabId, { active: true }, (tab) => {
+        if (chrome.runtime.lastError) {
+          console.error('Error restoring tab:', chrome.runtime.lastError);
+        }
+      });
     }
   }
+  // for both buttons, clear the notification and reset the counter
+  chrome.notifications.clear(notificationId);
+  tabSwitchTimes = [];
+});
+
+// track tab switches
+chrome.tabs.onActivated.addListener((activeInfo) => {
+    if (activeInfo.tabId !== lastTabId) {
+        previousTabId = lastTabId; // store the previous tab before updating
+        tabSwitchCount++;
+        lastTabId = activeInfo.tabId;
+        chrome.storage.local.set({ tabSwitchCount });
+        
+        // Add current time to tab switch times
+        tabSwitchTimes.push(Date.now());
+        checkTabSwitchThreshold();
+    }
 });
 
 // track window focus switches
 chrome.windows.onFocusChanged.addListener((windowId) => {
-  if (windowId !== lastWindowId && windowId !== chrome.windows.WINDOW_ID_NONE) {
-    tabSwitchCount++;
-    lastWindowId = windowId;
-    chrome.storage.local.set({ tabSwitchCount });
-    
-    // check if we've hit the threshold
-    if (tabSwitchCount % 25 === 0) {
-      notifyTabSwitchThreshold();
+    if (windowId !== lastWindowId && windowId !== chrome.windows.WINDOW_ID_NONE) {
+        previousTabId = lastTabId; // store the previous tab before updating
+        tabSwitchCount++;
+        lastWindowId = windowId;
+        chrome.storage.local.set({ tabSwitchCount });
+        
+        // add current time to tab switch times
+        tabSwitchTimes.push(Date.now());
+        checkTabSwitchThreshold();
     }
-  }
 });
 
 // request notification permission when extension is installed
@@ -246,6 +293,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     case 'getTabSwitchCount':
       sendResponse({ count: tabSwitchCount });
+      break;
+
+    case 'updateFocusSettings':
+      focusSettings = request.settings;
+      // reset tab switch times when settings change
+      tabSwitchTimes = [];
+      sendResponse({
+        isRunning: isTimerRunning,
+        remainingTime
+      });
       break;
   }
   return true;
