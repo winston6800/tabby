@@ -425,6 +425,31 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         remainingTime
       });
       break;
+
+    case 'updateNonProductiveDomains':
+      console.log('Updating non-productive domains:', request.domains);
+      nonProductiveDomains = request.domains;
+      console.log('Updated non-productive domains list:', nonProductiveDomains);
+      // reset unproductive time tracking if we're currently on an unproductive domain
+      if (unproductiveStartTime) {
+          const currentTab = chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+              if (tabs[0] && tabs[0].url) {
+                  try {
+                      const domain = new URL(tabs[0].url).hostname;
+                      console.log('Current domain:', domain);
+                      console.log('Is domain in updated list?', nonProductiveDomains.some(d => domain.includes(d)));
+                      if (!nonProductiveDomains.some(d => domain.includes(d))) {
+                          console.log('Resetting unproductive time tracking');
+                          unproductiveStartTime = null;
+                      }
+                  } catch (e) {
+                      console.error('Error parsing URL:', e);
+                  }
+              }
+          });
+      }
+      sendResponse({ success: true });
+      break;
   }
   return true;
 }); 

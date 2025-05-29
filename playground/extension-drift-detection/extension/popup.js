@@ -311,8 +311,14 @@ document.addEventListener('DOMContentLoaded', () => {
             chrome.storage.local.get(['nonProductiveDomains'], (result) => {
                 const domains = result.nonProductiveDomains || [];
                 const updatedDomains = domains.filter(d => d !== domain);
-                chrome.storage.local.set({ nonProductiveDomains: updatedDomains });
-                li.remove();
+                chrome.storage.local.set({ nonProductiveDomains: updatedDomains }, () => {
+                    // notify background script of domain list update
+                    chrome.runtime.sendMessage({ 
+                        action: 'updateNonProductiveDomains',
+                        domains: updatedDomains
+                    });
+                    li.remove();
+                });
             });
         };
         
@@ -336,6 +342,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             domains.push(domain);
             chrome.storage.local.set({ nonProductiveDomains: domains }, () => {
+                // notify background script of domain list update
+                chrome.runtime.sendMessage({ 
+                    action: 'updateNonProductiveDomains',
+                    domains: domains
+                });
                 addDomainToList(domain);
                 newDomainInput.value = '';
             });
