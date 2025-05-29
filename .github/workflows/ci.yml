@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: Install dependencies
+      - name: Install dependencies (frontend)
         run: npm ci
         working-directory: vite-react
       - name: Run tests
@@ -32,7 +32,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: Install dependencies
+      - name: Install dependencies (backend)
         run: npm ci
         working-directory: server
       - name: Run backend tests

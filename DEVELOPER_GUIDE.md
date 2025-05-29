@@ -8,7 +8,7 @@ Tabby is a Chrome extension built with React, TypeScript, and Node.js. This guid
 
 ```
 tabby/
-├── chrome-extension/    # Chrome extension source code
+├── extension/          # Chrome extension source code
 ├── server/             # Backend server code
 ├── shared/             # Shared types and utilities
 ├── vite-react/         # Frontend React application
@@ -28,13 +28,12 @@ tabby/
 
 ```bash
 git clone https://github.com/winston6800/tabby.git
-cd tabby
 ```
-
 ### 2. Install Dependencies
 
 ```bash
 # Install root dependencies
+cd tabby
 npm install
 
 # Install extension dependencies
@@ -42,17 +41,17 @@ cd chrome-extension
 npm install
 
 # Install server dependencies
-cd ../server
+cd server
 npm install
 
 # Install frontend dependencies
-cd ../vite-react
+cd vite-react
 npm install
 ```
 
 ### 3. Environment Setup
 
-1. Create a `.env` file in the root directory:
+1. Create a `.env` file in the server directory:
 ```bash
 cp .env.example .env
 ```
@@ -86,24 +85,28 @@ npm run build
 
 ## Running Tests
 
-### Unit Tests
-
 ```bash
 # Run all tests
+# Make sure you are in the root directory
 npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Run tests with coverage
-npm run test:coverage
 ```
 
-### Integration Tests
+## Running website
 
 ```bash
-npm run test:integration
+# Make sure you are in the root directory
+npm start
 ```
+
+## Running extension
+1. Go to the extension setting in the browser of choice
+2. Enable dev mode
+3. Click load unpack
+4. Open the Tabby folder (double click)
+5. Click the extension folder
+6. Click select folder
+7. Now you can see Tabby as one of your usable extensions
+
 
 ## Code Style Guide
 
@@ -204,9 +207,8 @@ Our CI/CD pipeline runs on GitHub Actions and Vite+React and includes:
 ## Getting Help
 
 - Create an issue on GitHub
-- Join our [Discord community](link to be added)
 - Contact the maintainers
 
 ---
 
-*This guide is a living document and will be updated as the project evolves. Last updated: [Current Date]* 
+*This guide is a living document and will be updated as the project evolves. Last updated: [5/25/2025]* 

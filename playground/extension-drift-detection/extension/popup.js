@@ -236,54 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
     // Update stats every second
     setInterval(updateStats, 1000);
-  
-    // Node display functionality
-    const nodeList = document.getElementById('nodeList');
-    
-    function updateNodeList(nodes) {
-      console.log('updateNodeList called with nodes:', nodes);
-      if (!nodeList) {
-        console.error('nodeList element not found!');
-        return;
-      }
-      
-      nodeList.innerHTML = '';
-      nodes.forEach(node => {
-        console.log('Creating element for node:', node);
-        const nodeElement = document.createElement('div');
-        nodeElement.className = 'node-item';
-        nodeElement.style.backgroundColor = node.data.color || '#ffffff';
-        nodeElement.innerHTML = `
-          <h3>${node.data.title}</h3>
-          <p>${node.data.description || ''}</p>
-          <div class="node-tags">
-            ${(node.data.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}
-          </div>
-        `;
-        nodeList.appendChild(nodeElement);
-      });
-    }
-  
-    // Listen for node updates
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-      console.log('Popup received message:', request);
-      if (request.action === 'nodesUpdated') {
-        console.log('Updating node list with:', request.nodes);
-        updateNodeList(request.nodes);
-        sendResponse({ success: true });
-      }
-    });
-  
-    // Initial load of nodes
-    console.log('Requesting initial nodes...');
-    chrome.runtime.sendMessage({ action: 'getNodes' }, (response) => {
-      console.log('Initial nodes load response:', response);
-      if (response && response.nodes) {
-        updateNodeList(response.nodes);
-      } else {
-        console.log('No nodes found in initial load');
-      }
-    });
+          
   });
   
   // Listen for messages from background script

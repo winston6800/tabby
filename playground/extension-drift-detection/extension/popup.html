@@ -53,33 +53,15 @@
         border-radius: 5px;
         text-align: center;
       }
+      .node-map {
+        height: 300px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-top: 10px;
+      }
       .check-in-container {
         text-align: center;
         margin: 20px 0;
-      }
-      .node-item {
-        margin: 10px 0;
-        padding: 10px;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      }
-      .node-item h3 {
-        margin: 0 0 5px 0;
-      }
-      .node-item p {
-        margin: 0 0 5px 0;
-        font-size: 0.9em;
-      }
-      .node-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-      }
-      .tag {
-        background: rgba(0,0,0,0.1);
-        padding: 2px 6px;
-        border-radius: 3px;
-        font-size: 0.8em;
       }
     </style>
   </head>
@@ -89,16 +71,20 @@
     <div class="nav-buttons">
       <button class="nav-button" data-section="overview">Overview</button>
       <button class="nav-button" data-section="timer">Timer</button>
-      <button class="nav-button" data-section="tasks">Tasks</button>
+      <button class="nav-button" data-section="node-map">Node Map</button>
+      <button class="nav-button" data-section="focus-mode">Focus Mode</button>
     </div>
 
     <div id="overview" class="section active">
       <h2>Overview</h2>
       <div class="check-in-container">
         <button id="checkInButton" class="nav-button">Check In</button>
-        <p>Days checked in: <span id="counter">0</span></p>
       </div>
       <div class="stats">
+        <div class="stat-box">
+          <h3>Streak</h3>
+          <p>Days checked in: <span id="counter">0</span></p>
+        </div>
         <div class="stat-box">
           <h3>Productive Time</h3>
           <p id="productiveTime">0h 0m</p>
@@ -110,10 +96,6 @@
         <div class="stat-box">
           <h3>Tasks Completed</h3>
           <p id="tasksCompleted">0</p>
-        </div>
-        <div class="stat-box">
-          <h3>Tab Switches</h3>
-          <p id="tabSwitchCount">0</p>
         </div>
       </div>
     </div>
@@ -133,9 +115,21 @@
       </div>
     </div>
 
-    <div id="tasks" class="section">
-      <h2>Current Tasks</h2>
-      <div id="nodeList"></div>
+    <div id="node-map" class="section">
+      <h2> Node Map</h2>
+      <div class="node-map">
+        </div>
+      </div>
+    </div>
+
+    <div id="focus-mode" class="section">
+      <h2>Focus Mode</h2>
+      <div class="stats">
+        <div class="stat-box">
+          <h3>Tab Switches</h3>
+          <p id="tabSwitchCount">0</p>
+        </div>
+      </div>
     </div>
 
     <script src="popup.js"></script>

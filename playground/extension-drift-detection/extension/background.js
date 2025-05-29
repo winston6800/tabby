@@ -10,7 +10,89 @@ let tabSwitchCount = 0;
 let lastTabId = null;
 let lastWindowId = null;
 
-// Initialize node storage when extension is installed
+// initialize tab switch count from storage when extension starts
+chrome.storage.local.get(['tabSwitchCount'], (result) => {
+  if (result.tabSwitchCount !== undefined) {
+    tabSwitchCount = result.tabSwitchCount;
+  }
+});
+
+function notifyTabSwitchThreshold() {
+  console.log('Attempting to show notification...');
+  
+  // check if we have notification permission
+  chrome.permissions.contains({
+    permissions: ['notifications']
+  }, (hasPermission) => {
+    if (!hasPermission) {
+      console.log('No notification permission, requesting...');
+      chrome.permissions.request({
+        permissions: ['notifications']
+      }, (granted) => {
+        if (granted) {
+          console.log('Notification permission granted, showing notification');
+          showNotification();
+        } else {
+          console.log('Notification permission denied');
+        }
+      });
+    } else {
+      console.log('Notification permission exists, showing notification');
+      showNotification();
+    }
+  });
+}
+
+function showNotification() {
+  chrome.notifications.create({
+    type: 'basic',
+    iconUrl: chrome.runtime.getURL('icon.jpg'),
+    title: 'Tab Switch Alert',
+    message: 'You\'ve switched tabs 25 times. Consider taking a short break or refocusing on your task.',
+    priority: 2,
+    requireInteraction: true,
+    silent: false
+  }, (notificationId) => {
+    if (chrome.runtime.lastError) {
+      console.error('Notification error:', chrome.runtime.lastError);
+    } else {
+      console.log('Notification created with ID:', notificationId);
+    }
+  });
+}
+
+// track tab switches
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  if (activeInfo.tabId !== lastTabId) {
+    tabSwitchCount++;
+    lastTabId = activeInfo.tabId;
+    chrome.storage.local.set({ tabSwitchCount });
+    console.log('Tab switch detected. Count:', tabSwitchCount);
+    
+    // check if we've hit the threshold
+    // in the future make this customizable
+    if (tabSwitchCount % 25 === 0) {
+      console.log('Tab switch threshold reached!');
+      notifyTabSwitchThreshold();
+    }
+  }
+});
+
+// track window focus switches
+chrome.windows.onFocusChanged.addListener((windowId) => {
+  if (windowId !== lastWindowId && windowId !== chrome.windows.WINDOW_ID_NONE) {
+    tabSwitchCount++;
+    lastWindowId = windowId;
+    chrome.storage.local.set({ tabSwitchCount });
+    
+    // check if we've hit the threshold
+    if (tabSwitchCount % 25 === 0) {
+      notifyTabSwitchThreshold();
+    }
+  }
+});
+
+// request notification permission when extension is installed
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.set({
     productiveTime: 0,
@@ -18,8 +100,7 @@ chrome.runtime.onInstalled.addListener(() => {
     currentTask: null,
     isTimerRunning: false,
     remainingTime: 25 * 60,
-    tabSwitchCount: 0,
-    nodes: [] // Initialize empty nodes array
+    tabSwitchCount: 0
   });
 });
 
@@ -27,7 +108,7 @@ function notifyTimerComplete() {
   if (!hasNotified) {
     hasNotified = true;
     
-    // First check if we have notification permission
+    // first check if we have notification permission
     chrome.permissions.contains({
       permissions: ['notifications']
     }, (hasPermission) => {
@@ -36,19 +117,18 @@ function notifyTimerComplete() {
         return;
       }
 
-      // Create the notification with more options
+      // create the notification with more options
       chrome.notifications.create({
         type: 'basic',
         iconUrl: chrome.runtime.getURL('icon.jpg'),
         title: 'Timer Complete!',
         message: 'Your focus session has ended.',
         priority: 2,
-        requireInteraction: true, // Keep notification visible until user interacts
-        silent: false // Ensure sound plays
+        requireInteraction: true, // keep notification visible until user interacts
+        silent: false // ensure sound plays
       }, (notificationId) => {
         if (chrome.runtime.lastError) {
           console.error('Notification error:', chrome.runtime.lastError);
-          // Try to get more details about the error
           console.error('Error details:', {
             message: chrome.runtime.lastError.message,
             stack: chrome.runtime.lastError.stack
@@ -56,7 +136,7 @@ function notifyTimerComplete() {
         } else {
           console.log('Notification created with ID:', notificationId);
           
-          // Add click listener for the notification
+          // add click listener for the notification
           chrome.notifications.onClicked.addListener((clickedId) => {
             if (clickedId === notificationId) {
               console.log('Notification clicked');
@@ -101,9 +181,8 @@ function updateTimer() {
 // Start the timer update interval
 setInterval(updateTimer, 1000);
 
-// Listen for messages from popup and content script
+// Listen for messages from popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log('Background script received message:', request);
   switch (request.action) {
     case 'startTimer':
       // Request notification permission when starting the timer
@@ -168,30 +247,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     case 'getTabSwitchCount':
       sendResponse({ count: tabSwitchCount });
       break;
-
-    case 'updateNodes':
-      console.log('Updating nodes in storage:', request.nodes);
-      // Update nodes in storage
-      chrome.storage.local.set({ nodes: request.nodes }, () => {
-        console.log('Nodes updated in storage');
-        // Notify popup about the update
-        chrome.runtime.sendMessage({ 
-          action: 'nodesUpdated',
-          nodes: request.nodes
-        }, (response) => {
-          console.log('Popup response:', response);
-        });
-      });
-      sendResponse({ success: true });
-      break;
-
-    case 'getNodes':
-      console.log('Getting nodes from storage');
-      chrome.storage.local.get(['nodes'], (result) => {
-        console.log('Retrieved nodes from storage:', result.nodes);
-        sendResponse({ nodes: result.nodes || [] });
-      });
-      return true; // Keep the message channel open for async response
   }
   return true;
 }); 
