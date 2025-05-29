@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startTimerBtn.addEventListener('click', startTimer);
     stopTimerBtn.addEventListener('click', stopTimer);
   
-    // Stats display
+    // stats display
     function updateStats() {
       chrome.runtime.sendMessage({ action: 'getTimerStatus' }, (response) => {
         if (response) {
@@ -234,9 +234,130 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   
-    // Update stats every second
+    // update stats every second
     setInterval(updateStats, 1000);
           
+    // focus mode Settings
+    const switchThreshold = document.getElementById('switchThreshold');
+    const timeWindow = document.getElementById('timeWindow');
+    const saveSettings = document.getElementById('saveSettings');
+    const unproductiveTimeThreshold = document.getElementById('unproductiveTimeThreshold');
+
+    // load saved settings
+    chrome.storage.local.get(['focusSettings'], (result) => {
+        if (result.focusSettings) {
+            switchThreshold.value = result.focusSettings.switchThreshold || 25;
+            timeWindow.value = result.focusSettings.timeWindow || 2;
+            unproductiveTimeThreshold.value = result.focusSettings.unproductiveTimeThreshold || 30;
+        }
+    });
+
+    // save settings
+    saveSettings.addEventListener('click', () => {
+        const settings = {
+            switchThreshold: parseInt(switchThreshold.value),
+            timeWindow: parseInt(timeWindow.value),
+            unproductiveTimeThreshold: parseInt(unproductiveTimeThreshold.value)
+        };
+
+        chrome.storage.local.set({ focusSettings: settings }, () => {
+            // Notify background script of settings change
+            chrome.runtime.sendMessage({ 
+                action: 'updateFocusSettings',
+                settings: settings
+            });
+
+            // show save confirmation
+            const originalText = saveSettings.textContent;
+            saveSettings.textContent = 'Saved!';
+            saveSettings.disabled = true;
+            setTimeout(() => {
+                saveSettings.textContent = originalText;
+                saveSettings.disabled = false;
+            }, 2000);
+        });
+    });
+
+    // Non-productive domains management
+    const newDomainInput = document.getElementById('newDomain');
+    const addDomainButton = document.getElementById('addDomain');
+    const domainList = document.getElementById('domainList');
+
+    // load existing domains
+    chrome.storage.local.get(['nonProductiveDomains'], (result) => {
+        if (result.nonProductiveDomains) {
+            result.nonProductiveDomains.forEach(domain => {
+                addDomainToList(domain);
+            });
+        }
+    });
+
+    function addDomainToList(domain) {
+        const li = document.createElement('li');
+        li.textContent = domain;
+        
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.className = 'delete-domain';
+        deleteButton.style.marginLeft = '10px';
+        deleteButton.style.padding = '2px 8px';
+        deleteButton.style.border = '1px solid #ccc';
+        deleteButton.style.borderRadius = '3px';
+        deleteButton.style.backgroundColor = '#fff';
+        deleteButton.style.cursor = 'pointer';
+        deleteButton.style.fontSize = '12px';
+        
+        deleteButton.onclick = () => {
+            chrome.storage.local.get(['nonProductiveDomains'], (result) => {
+                const domains = result.nonProductiveDomains || [];
+                const updatedDomains = domains.filter(d => d !== domain);
+                chrome.storage.local.set({ nonProductiveDomains: updatedDomains }, () => {
+                    // notify background script of domain list update
+                    chrome.runtime.sendMessage({ 
+                        action: 'updateNonProductiveDomains',
+                        domains: updatedDomains
+                    });
+                    li.remove();
+                });
+            });
+        };
+        
+        li.appendChild(deleteButton);
+        domainList.appendChild(li);
+    }
+
+    addDomainButton.addEventListener('click', () => {
+        const domain = newDomainInput.value.trim().toLowerCase();
+        if (!domain) {
+            alert('Please enter a domain');
+            return;
+        }
+
+        chrome.storage.local.get(['nonProductiveDomains'], (result) => {
+            const domains = result.nonProductiveDomains || [];
+            if (domains.includes(domain)) {
+                alert('This domain is already in the list');
+                return;
+            }
+
+            domains.push(domain);
+            chrome.storage.local.set({ nonProductiveDomains: domains }, () => {
+                // notify background script of domain list update
+                chrome.runtime.sendMessage({ 
+                    action: 'updateNonProductiveDomains',
+                    domains: domains
+                });
+                addDomainToList(domain);
+                newDomainInput.value = '';
+            });
+        });
+    });
+
+    newDomainInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            addDomainButton.click();
+        }
+    });
   });
   
   // Listen for messages from background script
