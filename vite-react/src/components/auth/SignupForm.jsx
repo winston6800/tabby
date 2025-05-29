@@ -70,6 +70,7 @@ export default function SignupForm() {
     }
   };
 
+  // Future: Doing email authentication would be nice
   return (
     <main className="auth-wrapper">
       <form className="auth-form" onSubmit={submit} data-testid="signup-form">
@@ -78,7 +79,7 @@ export default function SignupForm() {
         <input
           name="username"
           type="text"
-          placeholder="Email or Username"
+          placeholder="Username"
           required
         />
         <input

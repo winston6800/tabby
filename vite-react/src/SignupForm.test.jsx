@@ -33,7 +33,7 @@ describe("SignupForm", () => {
       </MemoryRouter>
     );
     expect(
-      screen.getByPlaceholderText("Email or Username")
+      screen.getByPlaceholderText("Username")
     ).toBeInTheDocument();
   });
 
