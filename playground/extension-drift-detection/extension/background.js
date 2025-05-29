@@ -11,11 +11,14 @@ let lastTabId = null;
 let lastWindowId = null;
 let focusSettings = {
     switchThreshold: 25,
-    timeWindow: 2 // minutes
+    timeWindow: 2, // minutes
+    unproductiveTimeThreshold: 30 // seconds before showing notification
 };
 let previousTabId = null; // store the previous tab ID for restoration
 let lastProductiveTabId = null; // store the last productive tab ID
-let nonProductiveDomains = []; // Array to store non-productive domains
+let nonProductiveDomains = []; // array to store non-productive domains
+let unproductiveStartTime = null; // track when user enters unproductive domain
+let unproductiveTimeThreshold = 30; // seconds before showing notification
 
 // initialize tab switch count from storage when extension starts
 chrome.storage.local.get(['tabSwitchCount', 'nonProductiveDomains'], (result) => {
@@ -89,13 +92,13 @@ function checkTabSwitchThreshold() {
     const now = Date.now();
     const timeWindowMs = focusSettings.timeWindow * 60 * 1000; // convert minutes to milliseconds
     
-    // Remove old tab switches outside the time window
+    // remove old tab switches outside the time window
     tabSwitchTimes = tabSwitchTimes.filter(time => now - time < timeWindowMs);
     
-    // Check if we've hit the threshold
+    // check if we've hit the threshold
     if (tabSwitchTimes.length >= focusSettings.switchThreshold) {
         notifyTabSwitchThreshold();
-        // Clear the array after notification
+        // clear the array after notification
         tabSwitchTimes = [];
     }
 }
@@ -119,14 +122,14 @@ chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) =
 // track tab switches
 chrome.tabs.onActivated.addListener((activeInfo) => {
     if (activeInfo.tabId !== lastTabId) {
-        // Get the URL of the newly activated tab
+        // get the url of the newly activated tab
         chrome.tabs.get(activeInfo.tabId, (tab) => {
             if (chrome.runtime.lastError) {
                 console.error('Error getting tab:', chrome.runtime.lastError);
                 return;
             }
             
-            // Extract domain from URL
+            // extract domain from url
             let domain = '';
             try {
                 domain = new URL(tab.url).hostname;
@@ -138,7 +141,26 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
                 return;
             }
 
-            // Only increment counter if the domain is in non-productive list
+            // check if we're leaving an unproductive domain
+            if (unproductiveStartTime && lastTabId) {
+                chrome.tabs.get(lastTabId, (lastTab) => {
+                    if (!chrome.runtime.lastError && lastTab.url) {
+                        try {
+                            const lastDomain = new URL(lastTab.url).hostname;
+                            if (nonProductiveDomains.some(d => lastDomain.includes(d))) {
+                                const timeSpent = Math.floor((Date.now() - unproductiveStartTime) / 1000);
+                                console.log(`Time spent on unproductive domain: ${timeSpent} seconds`);
+                                unproductiveTime += timeSpent * 1000; // convert to milliseconds
+                                chrome.storage.local.set({ unproductiveTime });
+                            }
+                        } catch (e) {
+                            console.error('Error parsing last tab URL:', e);
+                        }
+                    }
+                });
+            }
+
+            // only increment counter if the domain is in non-productive list
             if (nonProductiveDomains.some(d => domain.includes(d))) {
                 console.log('Incrementing counter for non-productive domain:', domain);
                 previousTabId = lastTabId; // store the previous tab before updating
@@ -146,15 +168,26 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
                 lastTabId = activeInfo.tabId;
                 chrome.storage.local.set({ tabSwitchCount });
                 
-                // Add current time to tab switch times
+                // add current time to tab switch times
                 tabSwitchTimes.push(Date.now());
                 checkTabSwitchThreshold();
+
+                // start tracking time on unproductive domain
+                unproductiveStartTime = Date.now();
+                // set timeout for notification
+                setTimeout(() => {
+                    if (unproductiveStartTime) { // only show if still on unproductive domain
+                        notifyUnproductiveTime();
+                    }
+                }, unproductiveTimeThreshold * 1000);
             } else {
                 console.log('Domain not in non-productive list:', domain);
-                // Update last productive tab if this is a productive domain
+                // update last productive tab if this is a productive domain
                 lastProductiveTabId = activeInfo.tabId;
-                // Still update lastTabId but don't increment counter
+                // still update lastTabId but don't increment counter
                 lastTabId = activeInfo.tabId;
+                // reset unproductive time tracking
+                unproductiveStartTime = null;
             }
         });
     }
@@ -163,7 +196,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
 // track window focus switches
 chrome.windows.onFocusChanged.addListener((windowId) => {
     if (windowId !== lastWindowId && windowId !== chrome.windows.WINDOW_ID_NONE) {
-        // Get the active tab in the focused window
+        // get the active tab in the focused window
         chrome.tabs.query({active: true, windowId: windowId}, (tabs) => {
             if (tabs.length === 0) return;
             
@@ -179,7 +212,7 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
                 return;
             }
 
-            // Only increment counter if the domain is in non-productive list
+            // only increment counter if the domain is in non-productive list
             if (nonProductiveDomains.some(d => domain.includes(d))) {
                 console.log('Window switch - Incrementing counter for non-productive domain:', domain);
                 previousTabId = lastTabId; // store the previous tab before updating
@@ -192,9 +225,9 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
                 checkTabSwitchThreshold();
             } else {
                 console.log('Window switch - Domain not in non-productive list:', domain);
-                // Update last productive tab if this is a productive domain
+                // update last productive tab if this is a productive domain
                 lastProductiveTabId = tab.id;
-                // Still update lastWindowId but don't increment counter
+                // still update lastWindowId but don't increment counter
                 lastWindowId = windowId;
             }
         });
@@ -290,6 +323,28 @@ function updateTimer() {
 // Start the timer update interval
 setInterval(updateTimer, 1000);
 
+function notifyUnproductiveTime() {
+    chrome.notifications.create({
+        type: 'basic',
+        iconUrl: chrome.runtime.getURL('icon.jpg'),
+        title: 'Time Alert',
+        message: `You've been on this unproductive site for ${unproductiveTimeThreshold} seconds. Would you like to return to your previous task?`,
+        priority: 2,
+        requireInteraction: true,
+        silent: false,
+        buttons: [
+            { title: 'Return to Task' },
+            { title: 'Dismiss' }
+        ]
+    }, (notificationId) => {
+        if (chrome.runtime.lastError) {
+            console.error('Notification error:', chrome.runtime.lastError);
+        } else {
+            console.log('Notification created with ID:', notificationId);
+        }
+    });
+}
+
 // Listen for messages from popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.action) {
@@ -361,6 +416,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       focusSettings = request.settings;
       // reset tab switch times when settings change
       tabSwitchTimes = [];
+      // update unproductive time threshold if provided
+      if (request.settings.unproductiveTimeThreshold) {
+          unproductiveTimeThreshold = request.settings.unproductiveTimeThreshold;
+      }
       sendResponse({
         isRunning: isTimerRunning,
         remainingTime

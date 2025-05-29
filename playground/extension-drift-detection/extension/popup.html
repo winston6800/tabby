@@ -213,19 +213,9 @@
             <span>minutes</span>
           </div>
           <div class="setting-item">
-            <label for="presetName">Preset Name:</label>
-            <input type="text" id="presetName" placeholder="Enter preset name">
-          </div>
-          <div class="preset-buttons">
-            <button id="savePreset" class="nav-button">Save as Preset</button>
-            <button id="loadPreset" class="nav-button">Load Preset</button>
-          </div>
-          <div class="preset-list">
-            <h4>Saved Presets</h4>
-            <select id="presetSelect" size="3">
-              <!-- Presets will be populated here -->
-            </select>
-            <button id="deletePreset" class="nav-button">Delete Selected</button>
+            <label for="unproductiveTimeThreshold">Unproductive Time Alert:</label>
+            <input type="number" id="unproductiveTimeThreshold" min="5" max="300" value="30">
+            <span>seconds</span>
           </div>
           <button id="saveSettings" class="nav-button">Save Settings</button>
         </div>

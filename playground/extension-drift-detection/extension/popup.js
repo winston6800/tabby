@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startTimerBtn.addEventListener('click', startTimer);
     stopTimerBtn.addEventListener('click', stopTimer);
   
-    // Stats display
+    // stats display
     function updateStats() {
       chrome.runtime.sendMessage({ action: 'getTimerStatus' }, (response) => {
         if (response) {
@@ -234,47 +234,30 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   
-    // Update stats every second
+    // update stats every second
     setInterval(updateStats, 1000);
           
     // focus mode Settings
     const switchThreshold = document.getElementById('switchThreshold');
     const timeWindow = document.getElementById('timeWindow');
     const saveSettings = document.getElementById('saveSettings');
-    const presetName = document.getElementById('presetName');
-    const savePreset = document.getElementById('savePreset');
-    const loadPreset = document.getElementById('loadPreset');
-    const presetSelect = document.getElementById('presetSelect');
-    const deletePreset = document.getElementById('deletePreset');
+    const unproductiveTimeThreshold = document.getElementById('unproductiveTimeThreshold');
 
     // load saved settings
-    chrome.storage.local.get(['focusSettings', 'presets'], (result) => {
+    chrome.storage.local.get(['focusSettings'], (result) => {
         if (result.focusSettings) {
             switchThreshold.value = result.focusSettings.switchThreshold || 25;
             timeWindow.value = result.focusSettings.timeWindow || 2;
-        }
-        
-        // load presets into select
-        if (result.presets) {
-            updatePresetList(result.presets);
+            unproductiveTimeThreshold.value = result.focusSettings.unproductiveTimeThreshold || 30;
         }
     });
-
-    function updatePresetList(presets) {
-        presetSelect.innerHTML = '';
-        Object.keys(presets).forEach(presetName => {
-            const option = document.createElement('option');
-            option.value = presetName;
-            option.textContent = presetName;
-            presetSelect.appendChild(option);
-        });
-    }
 
     // save settings
     saveSettings.addEventListener('click', () => {
         const settings = {
             switchThreshold: parseInt(switchThreshold.value),
-            timeWindow: parseInt(timeWindow.value)
+            timeWindow: parseInt(timeWindow.value),
+            unproductiveTimeThreshold: parseInt(unproductiveTimeThreshold.value)
         };
 
         chrome.storage.local.set({ focusSettings: settings }, () => {
@@ -295,90 +278,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // save preset
-    savePreset.addEventListener('click', () => {
-        const name = presetName.value.trim();
-        if (!name) {
-            alert('Please enter a preset name');
-            return;
-        }
-
-        const settings = {
-            switchThreshold: parseInt(switchThreshold.value),
-            timeWindow: parseInt(timeWindow.value)
-        };
-
-        chrome.storage.local.get(['presets'], (result) => {
-            const presets = result.presets || {};
-            presets[name] = settings;
-            
-            chrome.storage.local.set({ presets }, () => {
-                updatePresetList(presets);
-                presetName.value = '';
-                
-                // show confirmation
-                const originalText = savePreset.textContent;
-                savePreset.textContent = 'Saved!';
-                savePreset.disabled = true;
-                setTimeout(() => {
-                    savePreset.textContent = originalText;
-                    savePreset.disabled = false;
-                }, 2000);
-            });
-        });
-    });
-
-    // Load prelet
-    loadPreset.addEventListener('click', () => {
-        const selectedPreset = presetSelect.value;
-        if (!selectedPreset) {
-            alert('Please select a preset to load');
-            return;
-        }
-
-        chrome.storage.local.get(['presets'], (result) => {
-            const presets = result.presets || {};
-            const settings = presets[selectedPreset];
-            
-            if (settings) {
-                switchThreshold.value = settings.switchThreshold;
-                timeWindow.value = settings.timeWindow;
-                
-                // apply settings immediately
-                chrome.runtime.sendMessage({ 
-                    action: 'updateFocusSettings',
-                    settings: settings
-                });
-            }
-        });
-    });
-
-    // delete preset
-    deletePreset.addEventListener('click', () => {
-        const selectedPreset = presetSelect.value;
-        if (!selectedPreset) {
-            alert('Please select a preset to delete');
-            return;
-        }
-
-        if (confirm(`Are you sure you want to delete the preset "${selectedPreset}"?`)) {
-            chrome.storage.local.get(['presets'], (result) => {
-                const presets = result.presets || {};
-                delete presets[selectedPreset];
-                
-                chrome.storage.local.set({ presets }, () => {
-                    updatePresetList(presets);
-                });
-            });
-        }
-    });
-
     // Non-productive domains management
     const newDomainInput = document.getElementById('newDomain');
     const addDomainButton = document.getElementById('addDomain');
     const domainList = document.getElementById('domainList');
 
-    // Load existing domains
+    // load existing domains
     chrome.storage.local.get(['nonProductiveDomains'], (result) => {
         if (result.nonProductiveDomains) {
             result.nonProductiveDomains.forEach(domain => {
