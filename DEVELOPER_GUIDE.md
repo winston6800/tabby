@@ -49,15 +49,6 @@ cd vite-react
 npm install
 ```
 
-### 3. Environment Setup
-
-1. Create a `.env` file in the server directory:
-```bash
-cp .env.example .env
-```
-
-2. Update the environment variables as needed.
-
 ## Building the Project
 
 ### Chrome Extension
@@ -101,14 +92,7 @@ npm test
 
 ## Quick version
 
-### 1. Environment Setup
-
-Create a `.env` file in the server directory:
-```bash
-cp .env.example .env
-```
-
-### 2. build, test, and start
+### 1. build, test, and start
 ```bash
 # Make sure you are in the root directory
 npm start

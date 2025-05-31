@@ -19,7 +19,7 @@ out/
 
 # Local env files
 .local
-.env
+# .env
 .env.*
 
 # IDE/editor folders
