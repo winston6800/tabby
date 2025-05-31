@@ -15,7 +15,7 @@
 
     "preview:frontend": "npm run preview --prefix vite-react",
     "start:backend": "npm start --prefix server",
-    "start": "npm run ci && npm run build && npm run test && concurrently \"npm run start:backend\" \"npm run preview:frontend\""
+    "start": "npm ci && npm run ci && npm run build && npm run test && concurrently \"npm run start:backend\" \"npm run preview:frontend\""
 
   },
   
