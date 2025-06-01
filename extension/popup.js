@@ -239,6 +239,11 @@ document.addEventListener('DOMContentLoaded', () => {
   
     // Node display functionality
     const nodeList = document.getElementById('nodeList');
+    const connectionMode = document.getElementById('connectionMode');
+    const cancelConnectionBtn = document.getElementById('cancelConnection');
+    let selectedNodeForConnection = null;
+    let nodes = [];
+    let edges = [];
     
     function updateNodeList(nodes) {
       console.log('updateNodeList called with nodes:', nodes);
@@ -253,33 +258,89 @@ document.addEventListener('DOMContentLoaded', () => {
         const nodeElement = document.createElement('div');
         nodeElement.className = 'node-item';
         nodeElement.style.backgroundColor = node.data.color || '#ffffff';
-        nodeElement.innerHTML = `
+        nodeElement.dataset.nodeId = node.id;
+        
+        // Create node content container
+        const nodeContent = document.createElement('div');
+        nodeContent.innerHTML = `
           <h3>${node.data.title}</h3>
           <p>${node.data.description || ''}</p>
           <div class="node-tags">
             ${(node.data.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}
           </div>
         `;
+        
+        // Add connections display
+        const outgoingConnections = edges.filter(edge => edge.target === node.id);
+        const incomingConnections = edges.filter(edge => edge.source === node.id);
+        
+        if (outgoingConnections.length > 0 || incomingConnections.length > 0) {
+          const connectionsDiv = document.createElement('div');
+          connectionsDiv.className = 'node-connections';
+          
+          if (outgoingConnections.length > 0) {
+            const outgoingDiv = document.createElement('div');
+            outgoingDiv.className = 'connection-group outgoing';
+            outgoingConnections.forEach(edge => {
+              const sourceNode = nodes.find(n => n.id === edge.source);
+              if (sourceNode) {
+                const connectionItem = document.createElement('div');
+                connectionItem.className = 'connection-item outgoing';
+                connectionItem.innerHTML = `Connected from: ${sourceNode.data.title}`;
+                outgoingDiv.appendChild(connectionItem);
+              }
+            });
+            connectionsDiv.appendChild(outgoingDiv);
+          }
+          
+          if (incomingConnections.length > 0) {
+            const incomingDiv = document.createElement('div');
+            incomingDiv.className = 'connection-group incoming';
+            incomingConnections.forEach(edge => {
+              const targetNode = nodes.find(n => n.id === edge.target);
+              if (targetNode) {
+                const connectionItem = document.createElement('div');
+                connectionItem.className = 'connection-item incoming';
+                connectionItem.innerHTML = `Connects to: ${targetNode.data.title}`;
+                incomingDiv.appendChild(connectionItem);
+              }
+            });
+            connectionsDiv.appendChild(incomingDiv);
+          }
+          
+          nodeContent.appendChild(connectionsDiv);
+        }
+        
+        nodeElement.appendChild(nodeContent);
         nodeList.appendChild(nodeElement);
       });
     }
-  
+    
+    // Remove connection creation related code
+    if (connectionMode) {
+      connectionMode.style.display = 'none';
+    }
+    
     // Listen for node updates
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       console.log('Popup received message:', request);
       if (request.action === 'nodesUpdated') {
         console.log('Updating node list with:', request.nodes);
-        updateNodeList(request.nodes);
+        nodes = request.nodes;
+        edges = request.edges || [];
+        updateNodeList(nodes);
         sendResponse({ success: true });
       }
     });
-  
+    
     // Initial load of nodes
     console.log('Requesting initial nodes...');
     chrome.runtime.sendMessage({ action: 'getNodes' }, (response) => {
       console.log('Initial nodes load response:', response);
       if (response && response.nodes) {
-        updateNodeList(response.nodes);
+        nodes = response.nodes;
+        edges = response.edges || [];
+        updateNodeList(nodes);
       } else {
         console.log('No nodes found in initial load');
       }

@@ -9,10 +9,11 @@ window.addEventListener('message', (event) => {
 
   // Handle node updates
   if (event.data.type === 'NODE_UPDATE') {
-    console.log('Forwarding node update to background script:', event.data.nodes);
+    console.log('Forwarding node update to background script:', event.data);
     chrome.runtime.sendMessage({
       action: 'updateNodes',
-      nodes: event.data.nodes
+      nodes: event.data.nodes,
+      edges: event.data.edges
     }, (response) => {
       console.log('Background script response:', response);
     });
