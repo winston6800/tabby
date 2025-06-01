@@ -217,7 +217,6 @@
             <input type="number" id="unproductiveTimeThreshold" min="5" max="300" value="30">
             <span>seconds</span>
           </div>
-          <button id="saveSettings" class="nav-button">Save Settings</button>
         </div>
 
         <!-- Add Non-Productive Domains Section -->
@@ -235,6 +234,33 @@
             </ul>
           </div>
         </div>
+
+        <!-- Add Notification Preferences Section -->
+        <div class="settings-section">
+          <h3>Notification Preferences</h3>
+          <div class="setting-item">
+            <label for="notificationEnabled">Enable Notifications:</label>
+            <input type="checkbox" id="notificationEnabled" checked>
+          </div>
+          <div class="setting-item">
+            <label for="notificationStyle">Notification Style:</label>
+            <select id="notificationStyle">
+              <option value="subtle">Subtle</option>
+              <option value="bold">Bold</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label for="quietHoursStart">Quiet Hours Start:</label>
+            <input type="time" id="quietHoursStart" value="22:00">
+          </div>
+          <div class="setting-item">
+            <label for="quietHoursEnd">Quiet Hours End:</label>
+            <input type="time" id="quietHoursEnd" value="08:00">
+          </div>
+        </div>
+
+        <!-- Save Settings Button -->
+        <button id="saveSettings" class="nav-button" style="margin-top: 20px; width: 100%;">Save All Settings</button>
       </div>
     </div>
 

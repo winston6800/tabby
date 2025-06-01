@@ -12,7 +12,11 @@ let lastWindowId = null;
 let focusSettings = {
     switchThreshold: 25,
     timeWindow: 2, // minutes
-    unproductiveTimeThreshold: 30 // seconds before showing notification
+    unproductiveTimeThreshold: 30, // seconds before showing notification
+    notificationEnabled: true,
+    notificationStyle: 'subtle',
+    quietHoursStart: '22:00',
+    quietHoursEnd: '08:00'
 };
 let previousTabId = null; // store the previous tab ID for restoration
 let lastProductiveTabId = null; // store the last productive tab ID
@@ -43,43 +47,76 @@ let tabSwitchTimes = [];
 function notifyTabSwitchThreshold() {
   console.log('Attempting to show notification...');
   
-  // check if we have notification permission
-  chrome.permissions.contains({
-    permissions: ['notifications']
-  }, (hasPermission) => {
-    if (!hasPermission) {
-      console.log('No notification permission, requesting...');
-      chrome.permissions.request({
-        permissions: ['notifications']
-      }, (granted) => {
-        if (granted) {
-          console.log('Notification permission granted, showing notification');
-          showNotification();
-        } else {
-          console.log('Notification permission denied');
-        }
-      });
-    } else {
-      console.log('Notification permission exists, showing notification');
-      showNotification();
+  // check notification preferences first
+  chrome.storage.local.get(['focusSettings'], (result) => {
+    const settings = result.focusSettings || {};
+    if (!settings.notificationEnabled) {
+      console.log('Notifications are disabled in settings');
+      return;
     }
+
+    // check if we're in quiet hours
+    const now = new Date();
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+    const [startHour, startMin] = (settings.quietHoursStart || '22:00').split(':').map(Number);
+    const [endHour, endMin] = (settings.quietHoursEnd || '08:00').split(':').map(Number);
+    const startTime = startHour * 60 + startMin;
+    const endTime = endHour * 60 + endMin;
+    
+    if (startTime > endTime) {
+      // Quiet hours span midnight
+      if (currentTime >= startTime || currentTime <= endTime) {
+        console.log('Currently in quiet hours');
+        return;
+      }
+    } else {
+      // Normal quiet hours
+      if (currentTime >= startTime && currentTime <= endTime) {
+        console.log('Currently in quiet hours');
+        return;
+      }
+    }
+  
+    // check if we have notification permission
+    chrome.permissions.contains({
+      permissions: ['notifications']
+    }, (hasPermission) => {
+      if (!hasPermission) {
+        console.log('No notification permission, requesting...');
+        chrome.permissions.request({
+          permissions: ['notifications']
+        }, (granted) => {
+          if (granted) {
+            console.log('Notification permission granted, showing notification');
+            showNotification(settings.notificationStyle || 'subtle');
+          } else {
+            console.log('Notification permission denied');
+          }
+        });
+      } else {
+        console.log('Notification permission exists, showing notification');
+        showNotification(settings.notificationStyle || 'subtle');
+      }
+    });
   });
 }
 
-function showNotification() {
-  chrome.notifications.create({
+function showNotification(style = 'subtle') {
+  const notificationOptions = {
     type: 'basic',
     iconUrl: chrome.runtime.getURL('icon.jpg'),
     title: 'Tab Switch Alert',
     message: 'You\'ve switched tabs frequently. Would you like to return to your previous task?',
-    priority: 2,
-    requireInteraction: true,
-    silent: false,
+    priority: style === 'bold' ? 2 : 0,
+    requireInteraction: style === 'bold',
+    silent: style === 'subtle',
     buttons: [
       { title: 'Return to Task' },
       { title: 'Dismiss' }
     ]
-  }, (notificationId) => {
+  };
+
+  chrome.notifications.create(notificationOptions, (notificationId) => {
     if (chrome.runtime.lastError) {
       console.error('Notification error:', chrome.runtime.lastError);
     } else {
@@ -114,9 +151,12 @@ chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) =
       });
     }
   }
-  // for both buttons, clear the notification and reset the counter
+  // for both buttons, clear the notification
   chrome.notifications.clear(notificationId);
-  tabSwitchTimes = [];
+  // only reset tab switch times for tab switch notifications
+  if (notificationId.startsWith('tab-switch')) {
+    tabSwitchTimes = [];
+  }
 });
 
 // track tab switches
@@ -247,48 +287,57 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 function notifyTimerComplete() {
-  if (!hasNotified) {
-    hasNotified = true;
+  // check notification preferences first
+  chrome.storage.local.get(['focusSettings'], (result) => {
+    const settings = result.focusSettings || {};
+    if (!settings.notificationEnabled) {
+      console.log('Notifications are disabled in settings');
+      return;
+    }
+
+    // check if we're in quiet hours
+    const now = new Date();
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+    const [startHour, startMin] = (settings.quietHoursStart || '22:00').split(':').map(Number);
+    const [endHour, endMin] = (settings.quietHoursEnd || '08:00').split(':').map(Number);
+    const startTime = startHour * 60 + startMin;
+    const endTime = endHour * 60 + endMin;
     
-    // first check if we have notification permission
-    chrome.permissions.contains({
-      permissions: ['notifications']
-    }, (hasPermission) => {
-      if (!hasPermission) {
-        console.log('No notification permission');
+    if (startTime > endTime) {
+      // Quiet hours span midnight
+      if (currentTime >= startTime || currentTime <= endTime) {
+        console.log('Currently in quiet hours');
         return;
       }
+    } else {
+      // Normal quiet hours
+      if (currentTime >= startTime && currentTime <= endTime) {
+        console.log('Currently in quiet hours');
+        return;
+      }
+    }
 
-      // create the notification with more options
-      chrome.notifications.create({
+    if (!hasNotified) {
+      const notificationOptions = {
         type: 'basic',
         iconUrl: chrome.runtime.getURL('icon.jpg'),
         title: 'Timer Complete!',
-        message: 'Your focus session has ended.',
-        priority: 2,
-        requireInteraction: true, // keep notification visible until user interacts
-        silent: false // ensure sound plays
-      }, (notificationId) => {
+        message: 'Your focus session has ended. Take a short break!',
+        priority: settings.notificationStyle === 'bold' ? 2 : 0,
+        requireInteraction: settings.notificationStyle === 'bold',
+        silent: settings.notificationStyle === 'subtle'
+      };
+
+      chrome.notifications.create(notificationOptions, (notificationId) => {
         if (chrome.runtime.lastError) {
           console.error('Notification error:', chrome.runtime.lastError);
-          console.error('Error details:', {
-            message: chrome.runtime.lastError.message,
-            stack: chrome.runtime.lastError.stack
-          });
         } else {
           console.log('Notification created with ID:', notificationId);
-          
-          // add click listener for the notification
-          chrome.notifications.onClicked.addListener((clickedId) => {
-            if (clickedId === notificationId) {
-              console.log('Notification clicked');
-              chrome.notifications.clear(notificationId);
-            }
-          });
         }
       });
-    });
-  }
+      hasNotified = true;
+    }
+  });
 }
 
 function updateTimer() {
@@ -324,25 +373,58 @@ function updateTimer() {
 setInterval(updateTimer, 1000);
 
 function notifyUnproductiveTime() {
-    chrome.notifications.create({
-        type: 'basic',
-        iconUrl: chrome.runtime.getURL('icon.jpg'),
-        title: 'Time Alert',
-        message: `You've been on this unproductive site for ${unproductiveTimeThreshold} seconds. Would you like to return to your previous task?`,
-        priority: 2,
-        requireInteraction: true,
-        silent: false,
-        buttons: [
-            { title: 'Return to Task' },
-            { title: 'Dismiss' }
-        ]
-    }, (notificationId) => {
-        if (chrome.runtime.lastError) {
-            console.error('Notification error:', chrome.runtime.lastError);
-        } else {
-            console.log('Notification created with ID:', notificationId);
-        }
+  // check notification preferences first
+  chrome.storage.local.get(['focusSettings'], (result) => {
+    const settings = result.focusSettings || {};
+    if (!settings.notificationEnabled) {
+      console.log('Notifications are disabled in settings');
+      return;
+    }
+
+    // check if we're in quiet hours
+    const now = new Date();
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+    const [startHour, startMin] = (settings.quietHoursStart || '22:00').split(':').map(Number);
+    const [endHour, endMin] = (settings.quietHoursEnd || '08:00').split(':').map(Number);
+    const startTime = startHour * 60 + startMin;
+    const endTime = endHour * 60 + endMin;
+    
+    if (startTime > endTime) {
+      // Quiet hours span midnight
+      if (currentTime >= startTime || currentTime <= endTime) {
+        console.log('Currently in quiet hours');
+        return;
+      }
+    } else {
+      // Normal quiet hours
+      if (currentTime >= startTime && currentTime <= endTime) {
+        console.log('Currently in quiet hours');
+        return;
+      }
+    }
+
+    const notificationOptions = {
+      type: 'basic',
+      iconUrl: chrome.runtime.getURL('icon.jpg'),
+      title: 'Unproductive Time Alert',
+      message: 'You\'ve been on this site for a while. Would you like to return to your previous task?',
+      priority: settings.notificationStyle === 'bold' ? 2 : 0,
+      requireInteraction: settings.notificationStyle === 'bold',
+      silent: settings.notificationStyle === 'subtle',
+      buttons: [
+        { title: 'Return to Task' },
+        { title: 'Dismiss' }
+      ]
+    };
+
+    chrome.notifications.create(notificationOptions, (notificationId) => {
+      if (chrome.runtime.lastError) {
+        console.error('Notification error:', chrome.runtime.lastError);
+      } else {
+        console.log('Notification created with ID:', notificationId);
+      }
     });
+  });
 }
 
 // Listen for messages from popup

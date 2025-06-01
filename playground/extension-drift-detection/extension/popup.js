@@ -242,6 +242,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeWindow = document.getElementById('timeWindow');
     const saveSettings = document.getElementById('saveSettings');
     const unproductiveTimeThreshold = document.getElementById('unproductiveTimeThreshold');
+    const notificationEnabled = document.getElementById('notificationEnabled');
+    const notificationStyle = document.getElementById('notificationStyle');
+    const quietHoursStart = document.getElementById('quietHoursStart');
+    const quietHoursEnd = document.getElementById('quietHoursEnd');
 
     // load saved settings
     chrome.storage.local.get(['focusSettings'], (result) => {
@@ -249,6 +253,10 @@ document.addEventListener('DOMContentLoaded', () => {
             switchThreshold.value = result.focusSettings.switchThreshold || 25;
             timeWindow.value = result.focusSettings.timeWindow || 2;
             unproductiveTimeThreshold.value = result.focusSettings.unproductiveTimeThreshold || 30;
+            notificationEnabled.checked = result.focusSettings.notificationEnabled !== false; // default to true
+            notificationStyle.value = result.focusSettings.notificationStyle || 'subtle';
+            quietHoursStart.value = result.focusSettings.quietHoursStart || '22:00';
+            quietHoursEnd.value = result.focusSettings.quietHoursEnd || '08:00';
         }
     });
 
@@ -257,7 +265,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const settings = {
             switchThreshold: parseInt(switchThreshold.value),
             timeWindow: parseInt(timeWindow.value),
-            unproductiveTimeThreshold: parseInt(unproductiveTimeThreshold.value)
+            unproductiveTimeThreshold: parseInt(unproductiveTimeThreshold.value),
+            notificationEnabled: notificationEnabled.checked,
+            notificationStyle: notificationStyle.value,
+            quietHoursStart: quietHoursStart.value,
+            quietHoursEnd: quietHoursEnd.value
         };
 
         chrome.storage.local.set({ focusSettings: settings }, () => {
