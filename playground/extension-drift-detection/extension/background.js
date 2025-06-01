@@ -22,7 +22,16 @@ let previousTabId = null; // store the previous tab ID for restoration
 let lastProductiveTabId = null; // store the last productive tab ID
 let nonProductiveDomains = []; // array to store non-productive domains
 let unproductiveStartTime = null; // track when user enters unproductive domain
-let unproductiveTimeThreshold = 30; // seconds before showing notification
+let progressUpdateInterval = null; // for tracking progress bar updates
+
+// analytics data structures
+let domainStats = {
+    // Format: { 'domain.com': { totalTime: 0, visits: 0, lastVisit: null } }
+};
+
+let dailyStats = {
+    // Format: { 'YYYY-MM-DD': { domains: {}, totalDriftEvents: 0 } }
+};
 
 // initialize tab switch count from storage when extension starts
 chrome.storage.local.get(['tabSwitchCount', 'nonProductiveDomains'], (result) => {
@@ -38,6 +47,16 @@ chrome.storage.local.get(['tabSwitchCount', 'nonProductiveDomains'], (result) =>
 chrome.storage.local.get(['focusSettings'], (result) => {
     if (result.focusSettings) {
         focusSettings = result.focusSettings;
+    }
+});
+
+// initialize analytics data from storage
+chrome.storage.local.get(['domainStats', 'dailyStats'], (result) => {
+    if (result.domainStats) {
+        domainStats = result.domainStats;
+    }
+    if (result.dailyStats) {
+        dailyStats = result.dailyStats;
     }
 });
 
@@ -159,9 +178,60 @@ chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) =
   }
 });
 
+function getTodayDateString() {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+}
+
+function updateDomainStats(domain, timeSpent) {
+    const today = getTodayDateString();
+    
+    // initialize today's stats if not exists
+    if (!dailyStats[today]) {
+        dailyStats[today] = {
+            domains: {},
+            totalDriftEvents: 0
+        };
+    }
+    
+    // update domain stats
+    if (!domainStats[domain]) {
+        domainStats[domain] = {
+            totalTime: 0,
+            visits: 0,
+            lastVisit: null
+        };
+    }
+    
+    // update daily domain stats
+    if (!dailyStats[today].domains[domain]) {
+        dailyStats[today].domains[domain] = {
+            timeSpent: 0,
+            visits: 0
+        };
+    }
+    
+    // update the stats
+    domainStats[domain].totalTime += timeSpent;
+    domainStats[domain].visits += 1;
+    domainStats[domain].lastVisit = Date.now();
+    
+    dailyStats[today].domains[domain].timeSpent += timeSpent;
+    dailyStats[today].domains[domain].visits += 1;
+    
+    // Save to storage
+    chrome.storage.local.set({ domainStats, dailyStats });
+}
+
 // track tab switches
 chrome.tabs.onActivated.addListener((activeInfo) => {
     if (activeInfo.tabId !== lastTabId) {
+        // Clear any existing progress update interval
+        if (progressUpdateInterval) {
+            clearInterval(progressUpdateInterval);
+            progressUpdateInterval = null;
+        }
+
         // get the url of the newly activated tab
         chrome.tabs.get(activeInfo.tabId, (tab) => {
             if (chrome.runtime.lastError) {
@@ -174,8 +244,6 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
             try {
                 domain = new URL(tab.url).hostname;
                 console.log('Current domain:', domain);
-                console.log('Non-productive domains list:', nonProductiveDomains);
-                console.log('Is domain non-productive?', nonProductiveDomains.some(d => domain.includes(d)));
             } catch (e) {
                 console.error('Error parsing URL:', e);
                 return;
@@ -192,6 +260,14 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
                                 console.log(`Time spent on unproductive domain: ${timeSpent} seconds`);
                                 unproductiveTime += timeSpent * 1000; // convert to milliseconds
                                 chrome.storage.local.set({ unproductiveTime });
+                                
+                                // Update analytics
+                                updateDomainStats(lastDomain, timeSpent);
+                                dailyStats[getTodayDateString()].totalDriftEvents++;
+                                chrome.storage.local.set({ dailyStats });
+
+                                // Reset progress bar on the previous tab
+                                chrome.tabs.sendMessage(lastTabId, { action: 'resetProgress' });
                             }
                         } catch (e) {
                             console.error('Error parsing last tab URL:', e);
@@ -214,12 +290,26 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
 
                 // start tracking time on unproductive domain
                 unproductiveStartTime = Date.now();
-                // set timeout for notification
-                setTimeout(() => {
-                    if (unproductiveStartTime) { // only show if still on unproductive domain
+                
+                // Start progress bar updates
+                progressUpdateInterval = setInterval(() => {
+                    const timeSpent = Math.floor((Date.now() - unproductiveStartTime) / 1000);
+                    const threshold = focusSettings.unproductiveTimeThreshold;
+                    const progress = Math.min(100, (timeSpent / threshold) * 100);
+                    
+                    // Update progress bar
+                    chrome.tabs.sendMessage(activeInfo.tabId, { 
+                        action: 'updateProgress',
+                        progress: progress
+                    });
+
+                    // Show notification when threshold is reached
+                    if (timeSpent >= threshold) {
                         notifyUnproductiveTime();
+                        clearInterval(progressUpdateInterval);
+                        progressUpdateInterval = null;
                     }
-                }, unproductiveTimeThreshold * 1000);
+                }, 1000); // Update every second
             } else {
                 console.log('Domain not in non-productive list:', domain);
                 // update last productive tab if this is a productive domain
@@ -500,7 +590,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       tabSwitchTimes = [];
       // update unproductive time threshold if provided
       if (request.settings.unproductiveTimeThreshold) {
-          unproductiveTimeThreshold = request.settings.unproductiveTimeThreshold;
+          focusSettings.unproductiveTimeThreshold = request.settings.unproductiveTimeThreshold;
       }
       sendResponse({
         isRunning: isTimerRunning,
