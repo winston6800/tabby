@@ -63,6 +63,70 @@
         text-align: center;
         margin: 20px 0;
       }
+      .settings-container {
+        padding: 20px;
+      }
+      
+      .settings-section {
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      
+      .setting-item {
+        margin: 15px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .setting-item label {
+        min-width: 150px;
+      }
+      
+      .setting-item input[type="number"] {
+        width: 60px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+      
+      .setting-item select {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+      
+      #saveSettings {
+        margin-top: 20px;
+      }
+      
+      .preset-buttons {
+        display: flex;
+        gap: 10px;
+        margin: 15px 0;
+      }
+      
+      .preset-list {
+        margin: 15px 0;
+      }
+      
+      .preset-list select {
+        width: 100%;
+        margin: 10px 0;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+      
+      #deletePreset {
+        background-color: #ff4444;
+      }
+      
+      #deletePreset:hover {
+        background-color: #cc0000;
+      }
     </style>
   </head>
   <body>
@@ -73,6 +137,7 @@
       <button class="nav-button" data-section="timer">Timer</button>
       <button class="nav-button" data-section="node-map">Node Map</button>
       <button class="nav-button" data-section="focus-mode">Focus Mode</button>
+      <button class="nav-button" data-section="settings">Settings</button>
     </div>
 
     <div id="overview" class="section active">
@@ -128,6 +193,89 @@
         <div class="stat-box">
           <h3>Tab Switches</h3>
           <p id="tabSwitchCount">0</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="settings" class="section">
+      <h2>Settings</h2>
+      <div class="settings-container">
+        <div class="settings-section">
+          <h3>Focus Mode Settings</h3>
+          <div class="setting-item">
+            <label for="switchThreshold">Tab Switch Threshold:</label>
+            <input type="number" id="switchThreshold" min="1" max="100" value="25">
+            <span>switches</span>
+          </div>
+          <div class="setting-item">
+            <label for="timeWindow">Time Window:</label>
+            <input type="number" id="timeWindow" min="1" max="60" value="2">
+            <span>minutes</span>
+          </div>
+          <div class="setting-item">
+            <label for="unproductiveTimeThreshold">Unproductive Time Alert:</label>
+            <input type="number" id="unproductiveTimeThreshold" min="5" max="300" value="30">
+            <span>seconds</span>
+          </div>
+        </div>
+
+        <!-- Add Non-Productive Domains Section -->
+        <div class="settings-section">
+          <h3>Non-Productive Domains</h3>
+          <p>Add domains that should be counted as non-productive (e.g., facebook.com, twitter.com)</p>
+          <div class="setting-item">
+            <input type="text" id="newDomain" placeholder="Enter domain (e.g., facebook.com)" style="width: 200px;">
+            <button id="addDomain" class="nav-button">Add Domain</button>
+          </div>
+          <div class="domain-list">
+            <h4>Current Non-Productive Domains</h4>
+            <ul id="domainList" style="list-style: none; padding: 0;">
+              <!-- Domains will be populated here -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- Add Notification Preferences Section -->
+        <div class="settings-section">
+          <h3>Notification Preferences</h3>
+          <div class="setting-item">
+            <label for="notificationEnabled">Enable Notifications:</label>
+            <input type="checkbox" id="notificationEnabled" checked>
+          </div>
+          <div class="setting-item">
+            <label for="notificationStyle">Notification Style:</label>
+            <select id="notificationStyle">
+              <option value="subtle">Subtle</option>
+              <option value="bold">Bold</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label for="quietHoursStart">Quiet Hours Start:</label>
+            <input type="time" id="quietHoursStart" value="22:00">
+          </div>
+          <div class="setting-item">
+            <label for="quietHoursEnd">Quiet Hours End:</label>
+            <input type="time" id="quietHoursEnd" value="08:00">
+          </div>
+        </div>
+
+        <!-- Save Settings Button -->
+        <button id="saveSettings" class="nav-button" style="margin-top: 20px; width: 100%;">Save All Settings</button>
+      </div>
+    </div>
+
+    <div id="notProductiveDomains" class="section">
+      <h2>Not Productive Domains</h2>
+      <div class="settings-container">
+        <div class="settings-section">
+          <h3>Manage Not Productive Domains</h3>
+          <div class="setting-item">
+            <input type="text" id="newDomain" placeholder="Enter domain (e.g., facebook.com)">
+            <button id="addDomain" class="nav-button">Add Domain</button>
+          </div>
+          <ul id="domainList">
+            <!-- Domains will be populated here -->
+          </ul>
         </div>
       </div>
     </div>

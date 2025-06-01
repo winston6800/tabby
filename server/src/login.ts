@@ -1,8 +1,12 @@
 import express from "express";
 import { findUserByUsername } from "./users";
 import { compare } from "bcrypt";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
 const router = express.Router();
+dotenv.config();
+const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
 router.post("/", async (req, res) => {
   const { username, password } = req.body;
@@ -19,7 +23,24 @@ router.post("/", async (req, res) => {
       return res.status(401).json({ error: "Authentication failed" });
     }
 
-    res.status(200).json({ message: "Successfully logged in " + username });
+    const payload = {
+      username: user.userName,
+      lastLogin: Date.now(),
+    };
+
+    const JWT_SECRET = process.env.JWT_SECRET;
+
+    if (!JWT_SECRET) {
+      throw new Error("Missing JWT_SECRET in environment variables");
+    }
+
+    const token = jwt.sign(payload, JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res
+      .status(200)
+      .json({ message: "Successfully logged in " + username, token });
   });
 });
 
