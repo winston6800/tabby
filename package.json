@@ -1,6 +1,10 @@
 {
   "name": "tabby",
   "scripts": {
+    "ci:frontend": "npm ci --prefix vite-react",
+    "ci:backend": "npm ci --prefix server",
+    "ci": "npm run ci:frontend && npm run ci:backend",
+
     "test:frontend": "npm test --prefix vite-react",
     "test:backend": "npm test --prefix server",
     "test": "npm run test:frontend && npm run test:backend",
@@ -11,7 +15,7 @@
 
     "preview:frontend": "npm run preview --prefix vite-react",
     "start:backend": "npm start --prefix server",
-    "start": "npm run build && npm run test && concurrently \"npm run start:backend\" \"npm run preview:frontend\""
+    "start": "npm ci && npm run ci && npm run build && npm run test && concurrently \"npm run start:backend\" \"npm run preview:frontend\""
 
   },
   
