@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactFlow, { Background, Controls, MiniMap } from "reactflow";
 import useNodeStore from "../store/nodeStore";
@@ -22,7 +22,18 @@ const NodeCanvas = ({ nodeTypes }) => {
     selectNode,
     isFocusMode,
     toggleMode,
+    loadFromLocalStorage,
   } = useNodeStore();
+
+  useEffect(() => {
+    if (loadFromLocalStorage) {
+      loadFromLocalStorage();
+    }
+  }, [loadFromLocalStorage]);
+
+  useEffect(() => {
+    saveToLocalStorage();
+  }, [nodes, edges, saveToLocalStorage]);
 
   const handleAddNode = useCallback(() => {
     addNode({
@@ -48,67 +59,66 @@ const NodeCanvas = ({ nodeTypes }) => {
 
   // Handles what to display to user when the user is already logged in.
   // Use this as reference for future login requirements
-const userLoginStatus = () => {
-  const token = localStorage.getItem("authToken");
-  if (!token) {
-    return (
-      <button
-        onClick={handleSaveProgress}
-        style={{
-          padding: "8px 16px",
-          background: "#7a77ff",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-      >
-        Save Progress
-      </button>
-    );
-  } else {
-    // decode username safely
-    let username = "User";
-    username = JSON.parse(atob(token.split(".")[1])).username || "User";
-
-    const handleSignOut = () => {
-      localStorage.removeItem("authToken");
-      navigate("/login");
-    };
-
-    return (
-      <>
-        <div
+  const userLoginStatus = () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      return (
+        <button
+          onClick={handleSaveProgress}
           style={{
             padding: "8px 16px",
             background: "#7a77ff",
-            color: "white",
-            borderRadius: "4px",
-            display: "flex",
-            alignItems: "center",
-            fontWeight: "bold",
-          }}
-        >
-          Welcome, {username}
-        </div>
-        <button
-          onClick={handleSignOut}
-          style={{
-            padding: "8px 16px",
-            background: "#e74c3c",
             color: "white",
             border: "none",
             borderRadius: "4px",
             cursor: "pointer",
           }}
         >
-          Sign Out
+          Save Progress
         </button>
-      </>
-    );
-  }
-};
+      );
+    } else {
+      // decode username safely
+      let username = "User";
+      username = JSON.parse(atob(token.split(".")[1])).username || "User";
 
+      const handleSignOut = () => {
+        localStorage.removeItem("authToken");
+        navigate("/login");
+      };
+
+      return (
+        <>
+          <div
+            style={{
+              padding: "8px 16px",
+              background: "#7a77ff",
+              color: "white",
+              borderRadius: "4px",
+              display: "flex",
+              alignItems: "center",
+              fontWeight: "bold",
+            }}
+          >
+            Welcome, {username}
+          </div>
+          <button
+            onClick={handleSignOut}
+            style={{
+              padding: "8px 16px",
+              background: "#e74c3c",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+          >
+            Sign Out
+          </button>
+        </>
+      );
+    }
+  };
 
   return (
     <main style={{ width: "100vw", height: "100vh", position: "relative" }}>
