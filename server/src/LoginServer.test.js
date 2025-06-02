@@ -77,4 +77,21 @@ describe("POST /login", () => {
     expect(response.status).toBe(401);
     expect(response.body.error).toMatch(/Failed to find user: Error: DB error/);
   });
+
+  it("returns JWT token on successful login", async () => {
+    users.findUserByUsername.mockImplementation((username, cb) => {
+      cb(null, mockUser);
+    });
+
+    compare.mockResolvedValue(true);
+
+    const response = await request(app).post("/login").send({
+      username: "Jordan",
+      password: "password123",
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body.token).toBeDefined();
+    expect(typeof response.body.token).toBe("string");
+  });
 });

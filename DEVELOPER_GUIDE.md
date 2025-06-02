@@ -49,15 +49,6 @@ cd vite-react
 npm install
 ```
 
-### 3. Environment Setup
-
-1. Create a `.env` file in the server directory:
-```bash
-cp .env.example .env
-```
-
-2. Update the environment variables as needed.
-
 ## Building the Project
 
 ### Chrome Extension
@@ -67,13 +58,13 @@ cd chrome-extension
 npm run build
 ```
 
-The built extension will be in `chrome-extension/dist/`.
-
 ### Server
 
 ```bash
 cd server
 npm run build
+#To start
+npm start
 ```
 
 ### Frontend
@@ -81,18 +72,27 @@ npm run build
 ```bash
 cd vite-react
 npm run build
+#To start
+npm run preview
 ```
 
 ## Running Tests
 
+### Server
 ```bash
-# Run all tests
-# Make sure you are in the root directory
+cd server
 npm test
 ```
 
-## Running website
+### Frontend
+```bash
+cd vite-react
+npm test
+```
 
+## Quick version
+
+### 1. build, test, and start
 ```bash
 # Make sure you are in the root directory
 npm start
@@ -113,16 +113,6 @@ npm start
 We follow these style guides:
 - [Airbnb JavaScript Style Guide](https://airbnb.io/javascript/react/) for React components
 - [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html) for TypeScript code
-
-### Linting
-
-```bash
-# Run linter
-npm run lint
-
-# Fix linting issues
-npm run lint:fix
-```
 
 ## Adding New Features
 
@@ -211,4 +201,4 @@ Our CI/CD pipeline runs on GitHub Actions and Vite+React and includes:
 
 ---
 
-*This guide is a living document and will be updated as the project evolves. Last updated: [5/25/2025]* 
+*This guide is a living document and will be updated as the project evolves. Last updated: [5/31/2025]* 
