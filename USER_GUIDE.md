@@ -16,12 +16,33 @@ Tabby is a visual productivity tool designed for creatives who thrive in chaos b
 - Google Chrome browser (version 88 or later)
 - A modern computer with at least 4GB RAM
 
-### Installation Steps (NOT FUNCTIONAL YET)
-1. Visit the Chrome Web Store (link to be added)
-2. Click "Add to Chrome"
-3. Confirm the installation
-4. Pin the Tabby extension to your toolbar for easy access
-
+### Extension Installation Steps 
+1. Clone the repo:
+```bash
+git clone https://github.com/winston6800/tabby.git
+```
+2. Install dependencies
+```bash
+ cd tabby
+```
+Run the command 
+```bash
+npm start
+```
+ in the tabby directory
+3. Build the extension
+```bash
+cd extension
+npm run build
+``` 
+## Running extension
+1. Go to the extension setting in the browser of choice
+2. Enable dev mode
+3. Click load unpack
+4. Open the Tabby folder (double click)
+5. Click the extension folder
+6. Click select folder
+7. Now you can see Tabby as one of your usable extensions
 ## Getting Started
 
 ### Creating Your First Node
@@ -178,4 +199,4 @@ If you encounter a bug that's not listed above:
 
 ---
 
-*This guide is a living document and will be updated as new features are added. Last updated: [Current Date]* 
+*This guide is a living document and will be updated as new features are added.* 

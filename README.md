@@ -67,7 +67,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-*This README is a living document and will be updated as the project evolves. Last updated: [Current Date]*
+*This README is a living document and will be updated as the project evolves. *
 
   
   

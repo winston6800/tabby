@@ -23,11 +23,27 @@ interface Loop {
 }
 
 function OpenLoopsDashboard({ mainTaskActive, pauseMainTask }: { mainTaskActive: boolean, pauseMainTask: () => void }) {
-  const [loops, setLoops] = useState<Loop[]>([]);
+  const [loops, setLoops] = useState<Loop[]>(() => {
+    const saved = localStorage.getItem('burnEngine_openLoopsDashboard');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [input, setInput] = useState('');
-  const [minimized, setMinimized] = useState(false);
+  const [minimized, setMinimized] = useState(() => {
+    const saved = localStorage.getItem('burnEngine_openLoopsMinimized');
+    return saved ? JSON.parse(saved) : false;
+  });
   const [activeId, setActiveId] = useState<number | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Save loops to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('burnEngine_openLoopsDashboard', JSON.stringify(loops));
+  }, [loops]);
+
+  // Save minimized state to localStorage
+  useEffect(() => {
+    localStorage.setItem('burnEngine_openLoopsMinimized', JSON.stringify(minimized));
+  }, [minimized]);
 
   // Timer effect for active loop
   useEffect(() => {
