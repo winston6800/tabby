@@ -24,42 +24,74 @@ const useNodeStore = create((set, get) => ({
       // Notify extension about node updates
       window.postMessage({
         type: 'NODE_UPDATE',
-        nodes: newNodes
+        nodes: newNodes,
+        edges: state.edges
       }, 'http://localhost:5173');
       return { nodes: newNodes };
     });
   },
   
   onEdgesChange: (changes) => {
-    set({
-      edges: applyEdgeChanges(changes, get().edges),
+    set((state) => {
+      const newEdges = applyEdgeChanges(changes, state.edges);
+      // Notify extension about edge updates
+      window.postMessage({
+        type: 'NODE_UPDATE',
+        nodes: state.nodes,
+        edges: newEdges
+      }, 'http://localhost:5173');
+      return { edges: newEdges };
     });
   },
   
   onConnect: (connection) => {
-    set({
-      edges: [...get().edges, { ...connection, id: uuidv4() }],
+    set((state) => {
+      const newEdges = [...state.edges, { ...connection, id: uuidv4() }];
+      // Notify extension about new connection
+      window.postMessage({
+        type: 'NODE_UPDATE',
+        nodes: state.nodes,
+        edges: newEdges
+      }, 'http://localhost:5173');
+      return { edges: newEdges };
     });
   },
   
-  addNode: (nodeData) => set((state) => ({
-    nodes: [
-      ...state.nodes,
-      {
-        id: uuidv4(),
-        type: 'custom',
-        position: { x: 100, y: 100 },
-        data: {
-          title: nodeData.title && nodeData.title.trim() !== '' ? nodeData.title : 'New Node',
-          description: nodeData.description || '',
-          expectedOutput: nodeData.expectedOutput || '',
-          tags: Array.isArray(nodeData.tags) && nodeData.tags.length > 0 ? nodeData.tags : ['new'],
-          color: nodeData.color || '#ffffff',
-          size: nodeData.size || 200,
+  addNode: (nodeData) => set((state) => {
+    // Find the next available letter by checking all existing nodes
+    const usedLetters = new Set();
+    state.nodes.forEach(node => {
+      const match = node.data.title.match(/^Node ([A-Z])$/);
+      if (match) {
+        usedLetters.add(match[1]);
+      }
+    });
+    
+    // Find the first unused letter
+    let nextLetter = 'A';
+    while (usedLetters.has(nextLetter)) {
+      nextLetter = String.fromCharCode(nextLetter.charCodeAt(0) + 1);
+    }
+    
+    return {
+      nodes: [
+        ...state.nodes,
+        {
+          id: uuidv4(),
+          type: 'custom',
+          position: { x: 100, y: 100 },
+          data: {
+            title: nodeData.title && nodeData.title.trim() !== '' ? nodeData.title : `Node ${nextLetter}`,
+            description: nodeData.description || '',
+            expectedOutput: nodeData.expectedOutput || '',
+            tags: Array.isArray(nodeData.tags) && nodeData.tags.length > 0 ? nodeData.tags : ['new'],
+            color: nodeData.color || '#ffffff',
+            size: nodeData.size || 200,
+          },
         },
-      },
-    ],
-  })),
+      ],
+    };
+  }),
   
   updateNode: (nodeId, updates) => set((state) => ({
     nodes: state.nodes.map((node) =>

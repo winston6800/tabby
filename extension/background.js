@@ -19,7 +19,8 @@ chrome.runtime.onInstalled.addListener(() => {
     isTimerRunning: false,
     remainingTime: 25 * 60,
     tabSwitchCount: 0,
-    nodes: [] // Initialize empty nodes array
+    nodes: [], // Initialize empty nodes array
+    edges: [] // Initialize empty edges array
   });
 });
 
@@ -171,13 +172,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     case 'updateNodes':
       console.log('Updating nodes in storage:', request.nodes);
-      // Update nodes in storage
-      chrome.storage.local.set({ nodes: request.nodes }, () => {
-        console.log('Nodes updated in storage');
+      // Update nodes and edges in storage
+      chrome.storage.local.set({ 
+        nodes: request.nodes,
+        edges: request.edges || []
+      }, () => {
+        console.log('Nodes and edges updated in storage');
         // Notify popup about the update
         chrome.runtime.sendMessage({ 
           action: 'nodesUpdated',
-          nodes: request.nodes
+          nodes: request.nodes,
+          edges: request.edges || []
         }, (response) => {
           console.log('Popup response:', response);
         });
@@ -187,9 +192,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     case 'getNodes':
       console.log('Getting nodes from storage');
-      chrome.storage.local.get(['nodes'], (result) => {
-        console.log('Retrieved nodes from storage:', result.nodes);
-        sendResponse({ nodes: result.nodes || [] });
+      chrome.storage.local.get(['nodes', 'edges'], (result) => {
+        console.log('Retrieved nodes and edges from storage:', result);
+        sendResponse({ 
+          nodes: result.nodes || [],
+          edges: result.edges || []
+        });
       });
       return true; // Keep the message channel open for async response
   }
