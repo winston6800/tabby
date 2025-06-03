@@ -54,7 +54,7 @@ npm install
 ### Chrome Extension
 
 ```bash
-cd chrome-extension
+cd extension
 npm run build
 ```
 
