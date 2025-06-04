@@ -1,0 +1,111 @@
+/* Main container that takes up the full viewport */
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #ffe0f0, #e0f7ff);
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+/* Form container with white background and shadow */
+.auth-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Ensure form stays above other content */
+  position: relative;
+  z-index: 1000;
+}
+
+/* Cat icon styling */
+.icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Form heading */
+h2 {
+  margin-bottom: 1.5rem;
+  color: #444;
+}
+
+/* Input field styling */
+input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 1rem;
+  box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
+
+/* Helper text container (forgot password, etc) */
+.helper {
+  width: 100%;
+  text-align: right;
+  margin-bottom: 1rem;
+}
+
+/* Helper links styling */
+.helper a {
+  font-size: 0.9rem;
+  color: #7a77ff;
+  text-decoration: none;
+}
+
+/* Primary button styling */
+button {
+  background-color: #7a77ff;
+  color: white;
+  padding: 0.75rem;
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
+
+/* Button hover state */
+button:hover {
+  background-color: #6b69e9;
+}
+
+/* Disabled button state */
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Alternative button styling (for secondary actions) */
+.alt-btn {
+  background: #f3f3f3;
+  color: #333;
+}
+
+/* Alternative button hover state */
+.alt-btn:hover {
+  background: #e0e0e0;
+}
+
+/* Divider between buttons */
+.divider {
+  margin: 1rem 0;
+  color: #aaa;
+  width: 100%;
+  text-align: center;
+} 

@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "**"]
+  pull_request:
+    branches: [main, "**"]
+
+jobs:
+  testFrontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies (frontend)
+        run: npm ci
+        working-directory: vite-react
+      - name: Run tests
+        run: npm test
+        working-directory: vite-react
+
+  testBackend:
+    runs-on: ubuntu-latest
+    env:
+      JWT_SECRET: ${ secrets.JWT_SECRET }
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies (backend)
+        run: npm ci
+        working-directory: server
+      - name: Run backend tests
+        run: npm test
+        working-directory: server
