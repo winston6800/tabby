@@ -4,11 +4,28 @@
 
 Tabby is a visual productivity tool designed for creatives who thrive in chaos but need a gentle anchor to bring their ideas to fruition. It helps you organize your thoughts, track your progress, and stay focused on what matters most to you.
 
+---
+
+## New Operational Use Case: The Burn Engine
+
+Tabby now includes the **Burn Engine**—a feature designed to help you create a sense of urgency and self-imposed accountability. By setting your own hourly rate, you can visualize your "burn rate" in real time as you work, turning your time into a tangible resource. This helps you move faster on the things that matter, making progress on your creative storm with a new sense of urgency.
+
+**Magnitude increase in productivity:**  
+The Burn Engine recreates the same urgency and loss aversion that getting bad grades used to have, but now it's directed toward the work you care about. You'll find yourself making real progress on your most important and meaningful projects.
+
+---
+
 ## Key Features
 
 - **Visual Node Mapping**: Create and connect nodes to represent your tasks, ideas, and projects
 - **Focus Sessions**: Select a node to work on and enter a distraction-free session
+- **Burn Engine**: Set your hourly rate, see your burn rate and total money "burned" as you work, and use this as a motivator to stay focused and move quickly
 - **Progress Tracking**: Monitor your streaks and completion rates
+
+## App & Extension
+
+- **Web App**: The main Tabby app is a web application. You use it by running `npm run dev` and accessing it in your browser.
+- **Extension (Companion App)**: There is a Chrome extension, but it is not integrated with the main app. Think of it as a companion tool for additional features. All core features, including the Burn Engine, are in the web app.
 
 ## Installation
 
@@ -16,7 +33,7 @@ Tabby is a visual productivity tool designed for creatives who thrive in chaos b
 - Google Chrome browser (version 88 or later)
 - A modern computer with at least 4GB RAM
 
-### Extension Installation Steps 
+### Main Application Installation Steps 
 1. Clone the repo:
 ```bash
 git clone https://github.com/winston6800/tabby.git
@@ -24,17 +41,14 @@ git clone https://github.com/winston6800/tabby.git
 2. Install dependencies
 ```bash
  cd tabby
+ cd vite-react
 ```
 Run the command 
 ```bash
-npm start
+npm run dev
 ```
  in the tabby directory
-3. Build the extension
-```bash
-cd extension
-npm run build
-``` 
+
 ## Running extension
 1. Go to the extension setting in the browser of choice
 2. Enable dev mode
@@ -199,4 +213,4 @@ If you encounter a bug that's not listed above:
 
 ---
 
-*This guide is a living document and will be updated as new features are added. Last updated: [Current Date]* 
+*This guide is a living document and will be updated as new features are added.* 

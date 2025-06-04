@@ -5,7 +5,6 @@ import SignupForm from './components/auth/SignupForm';
 import NodeCanvas from './components/NodeCanvas';
 import CustomNode from './components/CustomNode';
 import 'reactflow/dist/style.css';
-import BurnEngine from '../../playground/burn-engine/src/BurnEngine';
 
 /**
  * Node Types Configuration
@@ -23,7 +22,6 @@ const nodeTypes = {
  * - /login: Login page
  * - /signup: Registration page
  * - /canvas: Main node canvas UI
- * - /burn-engine: Burn Engine prototype UI
  * - /: Redirects to canvas
  * 
  * TODO: Add authentication protection for routes
@@ -35,7 +33,6 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/canvas" element={<NodeCanvas nodeTypes={nodeTypes} />} />
-        <Route path="/burn-engine" element={<BurnEngine />} />
         <Route path="/" element={<Navigate to="/canvas" replace />} />
       </Routes>
     </Router>
