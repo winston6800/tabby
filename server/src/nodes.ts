@@ -5,7 +5,7 @@ import db from "./database";
  */
 function createNode(
   userId: Number,
-  nodedName: string,
+  nodeName: string,
   description: string,
   expectedOutput: string,
   tags: string,
@@ -13,11 +13,12 @@ function createNode(
   size: number,
   callback: (err: Error | null, result?: any) => void
 ) {
-  const sql = `INSERT INTO nodes (userId, nodedName, description, expectedOutput, tags, color, size) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  const sql =
+    `INSERT INTO nodes (userId, nodeName, description, expectedOutput, tags, color, size) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
   db.run(
     sql,
-    [userId, nodedName, description, expectedOutput, tags, color, size],
+    [userId, nodeName, description, expectedOutput, tags, color, size],
     function (err: Error | null) {
       if (err) return callback(err, null);
       callback(null, { message: "Node created successfully" });

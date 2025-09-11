@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
   try {
     getEdges(fromNodeId, (err, rows) => {
       if (err) {
-        return res.status(500).json({ error: +err });
+        return res.status(500).json({ error: err.message });
       }
       res.status(200).json(rows);
     });
@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
   try {
     createEdge(fromNodeId, toNodeId, (err, result) => {
       if (err) {
-        return res.status(500).json({ error: +err });
+        return res.status(500).json({ error: err.message });
       }
       res.status(201).json(result);
     });
