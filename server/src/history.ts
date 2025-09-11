@@ -1,7 +1,7 @@
 import db from "./database";
 
 /**
- * CREATE: Makes an edge
+ * CREATE: Adds a history record
  */
 function addToHisotry(
   userId: number,
@@ -13,14 +13,15 @@ function addToHisotry(
   tags: string,
   callback: (err: Error | null, result?: any) => void
 ) {
-  const sql = `INSERT INTO edges (userId, nodeId, title, description, expectedOutput, timeSpent, tags) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  const sql =
+    `INSERT INTO history (userId, nodeId, title, description, expectedOutput, timeSpent, tags) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
   db.run(
     sql,
     [userId, nodeId, title, description, expectedOutput, timeSpent, tags],
     function (err: Error | null) {
       if (err) return callback(err, null);
-      callback(null, { message: `added to history}` });
+      callback(null, { message: "added to history" });
     }
   );
 }

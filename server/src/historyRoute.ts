@@ -24,7 +24,7 @@ router.post("/", async (req, res) => {
       tags,
       (err, result) => {
         if (err) {
-          return res.status(500).json({ error: + err });
+          return res.status(500).json({ error: err.message });
         }
         res
           .status(201)

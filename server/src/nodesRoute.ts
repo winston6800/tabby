@@ -29,12 +29,12 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { userId, nodedName, description, expectedOutput, tags, color, size } =
+  const { userId, nodeName, description, expectedOutput, tags, color, size } =
     req.body;
   try {
     createNode(
       userId,
-      nodedName,
+      nodeName,
       description,
       expectedOutput,
       tags,
@@ -42,7 +42,7 @@ router.post("/", async (req, res) => {
       size,
       (err, nodeId) => {
         if (err) {
-          return res.status(500).json({ error: +err });
+          return res.status(500).json({ error: err.message });
         }
         res
           .status(201)
@@ -75,7 +75,7 @@ router.patch("/:nodeId/description", async (req, res) => {
   try {
     const nodeId = Number(req.params.nodeId);
     const { newDesc } = req.body;
-    updateNodeColor(nodeId, newDesc, (err, result) => {
+    updateNodeDesc(nodeId, newDesc, (err, result) => {
       if (err) {
         return res.status(500).json({ error: err.message });
       }
@@ -91,7 +91,7 @@ router.patch("/:nodeId/color", async (req, res) => {
   try {
     const nodeId = Number(req.params.nodeId);
     const { newColor } = req.body;
-    updateNodeDesc(nodeId, newColor, (err, result) => {
+    updateNodeColor(nodeId, newColor, (err, result) => {
       if (err) {
         return res.status(500).json({ error: err.message });
       }
